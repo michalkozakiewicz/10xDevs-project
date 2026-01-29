@@ -1,0 +1,56 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { SessionClient } from "@/components/sessions/SessionClient";
+import type { SessionDTO, CardDTO, CardsListResponseDTO, SessionResponseDTO } from "@/types";
+
+// Disable prerendering for this dynamic route
+export const prerender = false;
+
+// TODO: Authentication will be implemented later
+// For now, we skip authentication to allow testing
+
+const sessionId = Astro.params.id;
+
+// Validate session ID
+if (!sessionId) {
+  return Astro.redirect("/sessions");
+}
+
+// Fetch session data (without authentication for now)
+let sessionData: SessionDTO;
+let cardsData: CardDTO[] = [];
+
+try {
+  // Get session details
+  const sessionResponse = await fetch(`${Astro.url.origin}/api/sessions/${sessionId}`);
+
+  if (!sessionResponse.ok) {
+    if (sessionResponse.status === 404) {
+      // Session not found
+      return Astro.redirect("/sessions");
+    }
+    throw new Error(`Failed to fetch session: ${sessionResponse.statusText}`);
+  }
+
+  const sessionResult: SessionResponseDTO = await sessionResponse.json();
+  sessionData = sessionResult.data as SessionDTO;
+
+  // Fetch cards for this session
+  const cardsResponse = await fetch(`${Astro.url.origin}/api/sessions/${sessionId}/cards`);
+
+  if (cardsResponse.ok) {
+    const cardsResult: CardsListResponseDTO = await cardsResponse.json();
+    cardsData = cardsResult.data;
+  }
+} catch (error) {
+  console.error("Error loading session:", error);
+  return Astro.redirect("/sessions");
+}
+
+// Prepare props for client component
+const pageTitle = `Sesja Estymacji - ${sessionId.slice(0, 8)}`;
+---
+
+<Layout title={pageTitle}>
+  <SessionClient client:load sessionId={sessionId} initialCards={cardsData} sessionData={sessionData} />
+</Layout>

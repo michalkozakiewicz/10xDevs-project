@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { ToasterProvider } from "@/components/ToasterProvider";
 
 interface Props {
   title?: string;
@@ -19,6 +20,7 @@ const { title = "10x Astro Starter" } = Astro.props;
   </head>
   <body>
     <slot />
+    <ToasterProvider client:load />
   </body>
 </html>
 
@@ -27,6 +29,10 @@ const { title = "10x Astro Starter" } = Astro.props;
   body {
     margin: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
+  }
+
+  html {
+    color-scheme: light dark;
   }
 </style>
