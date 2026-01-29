@@ -1,94 +1,163 @@
-# 10x Astro Starter
+# BucketEstimate AI
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+Webowa aplikacja wspierająca zespoły Scrumowe w szybkiej estymacji dużej liczby zadań przy użyciu metody Bucket System oraz sztucznej inteligencji.
+
+## O aplikacji
+
+BucketEstimate AI to narzędzie stworzone z myślą o zespołach deweloperskich, które regularnie muszą estymować kilkadziesiąt zadań w ramach backlog refinementu. Aplikacja umożliwia:
+
+- **Import do 50 kart zadań** z pliku CSV lub dodawanie ich ręcznie
+- **Wizualną organizację zadań** w kubełkach opartych o sekwencję Fibonacciego (1, 2, 3, 5, 8, 13, 21, ?)
+- **Automatyczną estymację przez AI** - wykorzystanie modeli GPT do wstępnego przypisania zadań do odpowiednich poziomów złożoności
+- **Intuicyjny interfejs drag-and-drop** do łatwego przesuwania zadań między kubełkami
+- **Zapis historii estymacji** - budowanie bazy wiedzy poprzez embeddingi i wyniki historyczne
+
+### Główne cele
+
+- Drastyczne skrócenie czasu planowania i refinementu backlogu
+- Odciążenie facylitatora poprzez automatyzację pierwszego kroku estymacji
+- Zapewnienie intuicyjnego, wizualnego interfejsu
+- Budowa bazy wiedzy estymacyjnej
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+- [Astro](https://astro.build/) v5 - Framework do budowy szybkich aplikacji webowych
+- [React](https://react.dev/) v19 - Biblioteka UI do interaktywnych komponentów
+- [TypeScript](https://www.typescriptlang.org/) v5 - Typowany JavaScript
+- [Tailwind CSS](https://tailwindcss.com/) v4 - Framework CSS utility-first
+- [Shadcn/ui](https://ui.shadcn.com/) - Komponenty UI (wariant new-york, kolor neutral)
+- [Supabase](https://supabase.com/) - Backend, uwierzytelnianie i baza danych (PostgreSQL)
 
 ## Prerequisites
 
 - Node.js v22.14.0 (as specified in `.nvmrc`)
 - npm (comes with Node.js)
 
-## Getting Started
+## Rozpoczęcie pracy
 
-1. Clone the repository:
+1. Sklonuj repozytorium:
 
 ```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
+git clone https://github.com/michalkozakiewicz/10xDevs-project.git
+cd 10xDevs-project
 ```
 
-2. Install dependencies:
+2. Zainstaluj zależności:
 
 ```bash
 npm install
 ```
 
-3. Run the development server:
+3. Skonfiguruj zmienne środowiskowe:
+
+Skopiuj plik `.env.example` do `.env` i uzupełnij wymagane wartości:
+
+```bash
+cp .env.example .env
+```
+
+Wymagane zmienne:
+- `SUPABASE_URL` - URL Twojego projektu Supabase
+- `SUPABASE_KEY` - Klucz publiczny API Supabase
+- `OPENROUTER_API_KEY` - Klucz API OpenRouter (do AI estymacji)
+
+4. Uruchom migracje bazy danych:
+
+```bash
+npx supabase db push
+```
+
+5. Uruchom serwer deweloperski:
 
 ```bash
 npm run dev
 ```
 
-4. Build for production:
+6. Zbuduj wersję produkcyjną:
 
 ```bash
 npm run build
 ```
 
-## Available Scripts
+## Dostępne skrypty
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+- `npm run dev` - Uruchom serwer deweloperski
+- `npm run build` - Zbuduj wersję produkcyjną
+- `npm run preview` - Podgląd buildu produkcyjnego
+- `npm run lint` - Uruchom ESLint
+- `npm run lint:fix` - Napraw problemy ESLint
+- `npm run format` - Sformatuj kod (Prettier)
+- `npm run format:check` - Sprawdź formatowanie bez zmian
 
-## Project Structure
+## Struktura projektu
 
-```md
+```
 .
 ├── src/
-│ ├── layouts/ # Astro layouts
-│ ├── pages/ # Astro pages
-│ │ └── api/ # API endpoints
-│ ├── components/ # UI components (Astro & React)
-│ └── assets/ # Static assets
-├── public/ # Public assets
+│   ├── layouts/              # Layouty Astro
+│   ├── pages/                # Strony Astro
+│   │   ├── api/              # Endpointy API
+│   │   │   └── sessions/     # API sesji i kart
+│   │   └── sessions/         # Strony sesji estymacji
+│   ├── components/           # Komponenty UI (Astro & React)
+│   │   ├── ui/               # Komponenty Shadcn/ui
+│   │   ├── sessions/         # Komponenty widoku sesji
+│   │   └── hooks/            # Custom React hooks
+│   ├── db/                   # Klienty Supabase i typy
+│   ├── lib/
+│   │   ├── services/         # Logika biznesowa
+│   │   ├── schemas/          # Schematy walidacji Zod
+│   │   └── types/            # Typy TypeScript
+│   ├── middleware/           # Middleware Astro
+│   └── styles/               # Style globalne
+├── supabase/
+│   └── migrations/           # Migracje bazy danych
+└── public/                   # Zasoby publiczne
 ```
 
-## AI Development Support
+## Kluczowe funkcjonalności
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
+### Import i zarządzanie zadaniami
 
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
+- Import zadań z pliku CSV (format: id, title, description)
+- Ręczne dodawanie pojedynczych zadań przez formularz
+- Maksymalnie 50 kart w jednej sesji
+- Automatyczne generowanie embeddingów dla każdego zadania
 
-### Cursor IDE
+### Estymacja wizualna
 
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
+- 8 kubełków o wartościach Fibonacciego: 1, 2, 3, 5, 8, 13, 21, ?
+- Interfejs drag-and-drop do przesuwania kart
+- Podgląd szczegółów zadania w modalu
+- Zapis stanu w czasie rzeczywistym
 
-### GitHub Copilot
+### Moduł AI
 
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
+- Automatyczne przypisanie wszystkich kart do kubełków przez AI
+- Wykorzystanie modeli GPT (przez OpenRouter)
+- Embeddingi tekstowe (text-embedding-3-small)
+- Modal ostrzegający przed nadpisaniem aktualnego układu
 
-### Windsurf
+### Podsumowanie i eksport
 
-The `.windsurfrules` file contains AI configuration for Windsurf.
+- Widok tabelaryczny z wynikami estymacji (ID, Tytuł, Wycena)
+- Dane tylko do odczytu
+- Możliwość wyczyszczenia sesji (z zachowaniem danych analitycznych)
 
-## Contributing
+### Bezpieczeństwo
 
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+- Uwierzytelnianie użytkowników (Supabase Auth)
+- Row Level Security (RLS) na wszystkich tabelach
+- Sesje powiązane z konkretnym facylitatorem
 
-## License
+## Dokumentacja
+
+Szczegółowa dokumentacja znajduje się w katalogu `.ai/`:
+- `prd.md` - Pełny dokument wymagań produktu
+- `tech-stack.md` - Szczegóły techniczne
+- `db-plan.md` - Schemat bazy danych
+- `api-plan.md` - Specyfikacja API
+
+## Licencja
 
 MIT
