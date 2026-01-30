@@ -1,5 +1,4 @@
 import type { SupabaseClient } from "@/db/supabase.client";
-import { DEFAULT_USER_ID } from "@/db/supabase.client";
 import type {
   SessionCreateCommand,
   SessionDTO,
@@ -11,17 +10,22 @@ import type {
 } from "@/types";
 
 /**
- * Creates a new estimation session for the development user
+ * Creates a new estimation session for authenticated user
  *
  * @param supabase - Supabase client instance
+ * @param userId - Authenticated user ID
  * @param command - Session creation command with optional context
  * @returns Created session DTO
  * @throws Error if database operation fails
  */
-export async function createSession(supabase: SupabaseClient, command: SessionCreateCommand): Promise<SessionDTO> {
+export async function createSession(
+  supabase: SupabaseClient,
+  userId: string,
+  command: SessionCreateCommand
+): Promise<SessionDTO> {
   // Prepare insert payload
   const sessionInsert: SessionInsert = {
-    user_id: DEFAULT_USER_ID,
+    user_id: userId,
     context: command.context ?? null,
     is_active: true,
   };

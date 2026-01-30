@@ -15,9 +15,30 @@ export const TopBar: React.FC<TopBarProps> = ({ user, onLogout }) => {
     window.location.href = "/sessions";
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // If custom logout handler is provided, use it
     if (onLogout) {
       onLogout();
+      return;
+    }
+
+    // Default logout implementation
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        // Redirect to login page after successful logout
+        window.location.href = "/auth/login";
+      } else {
+        console.error("Logout failed:", await response.text());
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
     }
   };
 

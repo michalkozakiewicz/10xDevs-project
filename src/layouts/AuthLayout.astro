@@ -1,0 +1,46 @@
+---
+import "../styles/global.css";
+import { ToasterProvider } from "@/components/ToasterProvider";
+
+interface Props {
+  title?: string;
+}
+
+const { title = "BucketEstimate AI" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-background">
+    <div class="flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <div class="w-full max-w-md">
+        <div class="mb-8 text-center">
+          <h1 class="text-3xl font-bold tracking-tight">BucketEstimate AI</h1>
+          <p class="mt-2 text-sm text-muted-foreground">Narzędzie do estymacji zespołowej metodą bucket</p>
+        </div>
+        <slot />
+      </div>
+    </div>
+    <ToasterProvider client:load />
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+  }
+
+  html {
+    color-scheme: light dark;
+  }
+</style>

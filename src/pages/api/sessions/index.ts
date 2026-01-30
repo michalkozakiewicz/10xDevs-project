@@ -2,17 +2,29 @@ import type { APIRoute } from "astro";
 import type { SessionCreateCommand, SessionResponseDTO, APIErrorDTO, SessionsListResponseDTO } from "@/types";
 import { SessionCreateSchema, SessionsQuerySchema } from "@/lib/schemas/session.schema";
 import { createSession, listUserSessions } from "@/lib/services/session.service";
-import { DEFAULT_USER_ID } from "@/db/supabase.client";
 
 export const prerender = false;
 
 /**
  * POST /api/sessions
- * Creates a new estimation session for the development user
- * TODO: Add authentication when auth system is implemented
+ * Creates a new estimation session for authenticated user
  */
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
+    // Step 0: Verify user is authenticated (should be guaranteed by middleware)
+    if (!locals.user) {
+      return new Response(
+        JSON.stringify({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        } as APIErrorDTO),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     // Step 1: Parse and validate request body
     let body: unknown;
     try {
@@ -44,7 +56,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Step 2: Create session through service
     const command: SessionCreateCommand = parseResult.data;
-    const session = await createSession(locals.supabase, command);
+    const session = await createSession(locals.supabase, locals.user.id, command);
 
     // Step 3: Return success response
     const response: SessionResponseDTO = {
@@ -72,11 +84,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 /**
  * GET /api/sessions
- * Lists all sessions for the development user
- * TODO: Add authentication when auth system is implemented
+ * Lists all sessions for authenticated user
  */
 export const GET: APIRoute = async ({ request, locals }) => {
   try {
+    // Step 0: Verify user is authenticated (should be guaranteed by middleware)
+    if (!locals.user) {
+      return new Response(
+        JSON.stringify({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        } as APIErrorDTO),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     // Parse query params
     const url = new URL(request.url);
     const queryParams = {
@@ -104,8 +129,8 @@ export const GET: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    // Fetch sessions using DEFAULT_USER_ID
-    const result = await listUserSessions(locals.supabase, DEFAULT_USER_ID, parseResult.data);
+    // Fetch sessions for authenticated user
+    const result = await listUserSessions(locals.supabase, locals.user.id, parseResult.data);
 
     const response: SessionsListResponseDTO = {
       data: result.data,

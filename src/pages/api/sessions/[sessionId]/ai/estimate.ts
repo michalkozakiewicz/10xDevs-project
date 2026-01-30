@@ -2,7 +2,6 @@ import type { APIRoute } from "astro";
 import type { APIErrorDTO } from "@/types";
 import { SessionIdSchema } from "@/lib/schemas/session.schema";
 import { runAIEstimation, type EstimationResult } from "@/lib/services/ai-estimate.service";
-import { DEFAULT_USER_ID } from "@/db/supabase.client";
 
 export const prerender = false;
 
@@ -28,6 +27,20 @@ interface EstimationResponseDTO {
  */
 export const POST: APIRoute = async ({ params, locals }) => {
   try {
+    // Step 0: Verify user is authenticated (should be guaranteed by middleware)
+    if (!locals.user) {
+      return new Response(
+        JSON.stringify({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        } as APIErrorDTO),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const { sessionId } = params;
 
     // Step 1: Validate session ID format
@@ -46,8 +59,7 @@ export const POST: APIRoute = async ({ params, locals }) => {
     }
 
     // Step 2: Run AI estimation
-    // TODO: Replace DEFAULT_USER_ID with actual authenticated user ID
-    const result = await runAIEstimation(locals.supabase, sessionId!, DEFAULT_USER_ID);
+    const result = await runAIEstimation(locals.supabase, sessionId!, locals.user.id);
 
     // Step 3: Return success response
     const response: EstimationResponseDTO = {

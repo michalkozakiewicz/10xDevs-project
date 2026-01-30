@@ -3,10 +3,13 @@ import Layout from "@/layouts/Layout.astro";
 import { TopBar } from "@/components/TopBar";
 import { SessionsDashboard } from "@/components/sessions/SessionsDashboard";
 
-// TODO: Autentykacja JWT będzie dodana później
-// Na razie używamy domyślnego użytkownika z env
+// Verify user is authenticated (should be guaranteed by middleware)
+if (!Astro.locals.user) {
+  return Astro.redirect("/auth/login");
+}
+
 const userInfo = {
-  email: import.meta.env.DEFAULT_USER_EMAIL || "user@example.com",
+  email: Astro.locals.user.email,
   avatarUrl: undefined,
 };
 ---
