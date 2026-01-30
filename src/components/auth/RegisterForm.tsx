@@ -38,14 +38,25 @@ export const RegisterForm: React.FC = () => {
     setApiError(null);
 
     try {
-      // TODO: Implementacja wywołania API /api/auth/register
-      console.log("Rejestracja użytkownika:", data);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Mock delay
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.error || "Wystąpił błąd podczas rejestracji");
+      }
 
       // Po sukcesie przekierowanie do logowania z komunikatem
-      // window.location.href = "/auth/login?registered=true";
+      // LoginForm wykryje parametr registered=true i wyświetli komunikat sukcesu
+      window.location.href = "/auth/login?registered=true";
     } catch (error) {
-      setApiError("Wystąpił błąd podczas rejestracji. Spróbuj ponownie.");
+      setApiError(error instanceof Error ? error.message : "Wystąpił błąd podczas rejestracji. Spróbuj ponownie.");
       console.error("Registration error:", error);
     } finally {
       setIsSubmitting(false);
