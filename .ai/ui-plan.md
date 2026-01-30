@@ -111,24 +111,24 @@ BucketEstimate AI to aplikacja webowa zoptymalizowana dla urządzeń desktopowyc
 
 **Kluczowe komponenty widoku:**
 
-| Komponent       | Opis                                         |
-| --------------- | -------------------------------------------- |
-| SessionHeader   | Przycisk wstecz do widoku sekcji + akcje sesji|
-| SessionTabs     | Tabs "Estymacja" / "Podsumowanie"            |
-| EstimationBoard | Kontener dla kubełków z drag-and-drop        |
-| Bucket          | Pojedynczy kubełek z nagłówkiem i listą kart |
-| TaskCard        | Karta zadania (ID + tytuł)                   |
-| SummaryTable    | Tabela podsumowania (ID, Tytuł, Wycena)      |
-| EmptyBoardState | Stan pustej sesji z CTA                      |
+| Komponent       | Opis                                           |
+| --------------- | ---------------------------------------------- |
+| SessionHeader   | Przycisk wstecz do widoku sekcji + akcje sesji |
+| SessionTabs     | Tabs "Estymacja" / "Podsumowanie"              |
+| EstimationBoard | Kontener dla kubełków z drag-and-drop          |
+| Bucket          | Pojedynczy kubełek z nagłówkiem i listą kart   |
+| TaskCard        | Karta zadania (ID + tytuł)                     |
+| SummaryTable    | Tabela podsumowania (ID, Tytuł, Wycena)        |
+| EmptyBoardState | Stan pustej sesji z CTA                        |
 
 **Modale:**
 
-| Modal             | Trigger                     | Zawartość                                                 |
-| ----------------- | --------------------------- | --------------------------------------------------------- |
-| AddTaskModal      | Przycisk "Dodaj zadanie"    | Formularz: ID*, Tytuł*, Opis                              |
-| ImportCsvModal    | Przycisk "Importuj CSV"     | Drag-drop zone + wynik importu                            |
-| AiEstimationModal | Przycisk "Estymuj przez AI" | Select modelu, textarea kontekstu, ostrzeżenie            |
-| TaskDetailModal   | Kliknięcie karty            | ID, Tytuł, Opis, Badge wyceny + Przycisk "Usuń zadanie"  |
+| Modal             | Trigger                     | Zawartość                                               |
+| ----------------- | --------------------------- | ------------------------------------------------------- |
+| AddTaskModal      | Przycisk "Dodaj zadanie"    | Formularz: ID*, Tytuł*, Opis                            |
+| ImportCsvModal    | Przycisk "Importuj CSV"     | Drag-drop zone + wynik importu                          |
+| AiEstimationModal | Przycisk "Estymuj przez AI" | Select modelu, textarea kontekstu, ostrzeżenie          |
+| TaskDetailModal   | Kliknięcie karty            | ID, Tytuł, Opis, Badge wyceny + Przycisk "Usuń zadanie" |
 
 **UX, dostępność i bezpieczeństwo:**
 
@@ -339,13 +339,13 @@ Middleware flow:
 
 ### 5.4 Komponenty estymacji
 
-| Komponent             | Lokalizacja                | Opis                                              |
-| --------------------- | -------------------------- | ------------------------------------------------- |
-| `EstimationBoard.tsx` | src/components/estimation/ | Kontener DndContext z kubełkami                   |
-| `Bucket.tsx`          | src/components/estimation/ | Droppable kubełek z nagłówkiem i listą kart       |
-| `TaskCard.tsx`        | src/components/estimation/ | Draggable karta zadania                           |
-| `TaskDetailModal.tsx` | src/components/estimation/ | Modal szczegółów z możliwością usunięcia zadania  |
-| `EmptyBoardState.tsx` | src/components/estimation/ | Stan pustej sesji z CTA                           |
+| Komponent             | Lokalizacja                | Opis                                             |
+| --------------------- | -------------------------- | ------------------------------------------------ |
+| `EstimationBoard.tsx` | src/components/estimation/ | Kontener DndContext z kubełkami                  |
+| `Bucket.tsx`          | src/components/estimation/ | Droppable kubełek z nagłówkiem i listą kart      |
+| `TaskCard.tsx`        | src/components/estimation/ | Draggable karta zadania                          |
+| `TaskDetailModal.tsx` | src/components/estimation/ | Modal szczegółów z możliwością usunięcia zadania |
+| `EmptyBoardState.tsx` | src/components/estimation/ | Stan pustej sesji z CTA                          |
 
 ### 5.5 Komponenty podsumowania
 
@@ -410,11 +410,11 @@ Middleware flow:
 
 ### 5.7 Custom hooks
 
-| Hook                | Lokalizacja           | Opis                                                      |
-| ------------------- | --------------------- | --------------------------------------------------------- |
-| `useSession.ts`     | src/components/hooks/ | Pobieranie i zarządzanie danymi sesji                     |
+| Hook                | Lokalizacja           | Opis                                                                         |
+| ------------------- | --------------------- | ---------------------------------------------------------------------------- |
+| `useSession.ts`     | src/components/hooks/ | Pobieranie i zarządzanie danymi sesji                                        |
 | `useCards.ts`       | src/components/hooks/ | CRUD operacje (CREATE, READ, UPDATE, DELETE) na kartach + optimistic updates |
-| `useDragAndDrop.ts` | src/components/hooks/ | Logika dnd-kit + zapis bucket_value                       |
+| `useDragAndDrop.ts` | src/components/hooks/ | Logika dnd-kit + zapis bucket_value                                          |
 
 ### 5.8 Context
 
@@ -432,17 +432,17 @@ npx shadcn@latest add button card dialog input textarea select table tabs badge 
 
 ## 6. Mapowanie User Stories do komponentów UI
 
-| User Story                           | Komponenty UI                                    |
-| ------------------------------------ | ------------------------------------------------ |
-| **US-001** Uwierzytelnienie          | `LoginForm`, `Topbar` (wylogowanie), Middleware  |
-| **US-002** Import CSV                | `ImportCsvModal`, Toast (błędy/sukces)           |
-| **US-003** Ręczne dodanie            | `AddTaskModal`, inline validation                |
-| **US-004** Drag-and-drop             | `EstimationBoard`, `Bucket`, `TaskCard`, dnd-kit |
-| **US-005** Szczegóły i usuwanie      | `TaskDetailModal`, Dialog potwierdzenia, Toast   |
-| **US-006** Estymacja AI              | `AiEstimationModal`, spinner, Toast              |
-| **US-007** Podsumowanie              | `SummaryTable`, `SessionTabs`                    |
-| **US-008** Czyszczenie sesji         | _(nie w MVP)_                                    |
-| **US-009** Obsługa błędów            | Toast, inline errors, empty states, skeletons    |
+| User Story                      | Komponenty UI                                    |
+| ------------------------------- | ------------------------------------------------ |
+| **US-001** Uwierzytelnienie     | `LoginForm`, `Topbar` (wylogowanie), Middleware  |
+| **US-002** Import CSV           | `ImportCsvModal`, Toast (błędy/sukces)           |
+| **US-003** Ręczne dodanie       | `AddTaskModal`, inline validation                |
+| **US-004** Drag-and-drop        | `EstimationBoard`, `Bucket`, `TaskCard`, dnd-kit |
+| **US-005** Szczegóły i usuwanie | `TaskDetailModal`, Dialog potwierdzenia, Toast   |
+| **US-006** Estymacja AI         | `AiEstimationModal`, spinner, Toast              |
+| **US-007** Podsumowanie         | `SummaryTable`, `SessionTabs`                    |
+| **US-008** Czyszczenie sesji    | _(nie w MVP)_                                    |
+| **US-009** Obsługa błędów       | Toast, inline errors, empty states, skeletons    |
 
 ---
 
@@ -465,16 +465,16 @@ npx shadcn@latest add button card dialog input textarea select table tabs badge 
 
 ### 7.3 Stany błędów
 
-| Błąd                   | Obsługa UI                              |
-| ---------------------- | --------------------------------------- |
-| Błąd sieci (drag-drop) | Toast z komunikatem                     |
-| Błąd usuwania (DELETE) | Toast "Nie udało się usunąć zadania"    |
-| Karta nie istnieje     | Toast + zamknięcie modalu               |
-| Błąd importu CSV       | Lista błędów w modalu                   |
-| Konflikt ID (409)      | Inline error pod polem                  |
-| Limit 50 kart (422)    | Komunikat przed importem                |
-| AI niedostępne (503)   | Error w modalu + "Ponów"                |
-| Nieautoryzowany (401)  | Redirect do /login                      |
+| Błąd                   | Obsługa UI                           |
+| ---------------------- | ------------------------------------ |
+| Błąd sieci (drag-drop) | Toast z komunikatem                  |
+| Błąd usuwania (DELETE) | Toast "Nie udało się usunąć zadania" |
+| Karta nie istnieje     | Toast + zamknięcie modalu            |
+| Błąd importu CSV       | Lista błędów w modalu                |
+| Konflikt ID (409)      | Inline error pod polem               |
+| Limit 50 kart (422)    | Komunikat przed importem             |
+| AI niedostępne (503)   | Error w modalu + "Ponów"             |
+| Nieautoryzowany (401)  | Redirect do /login                   |
 
 ---
 

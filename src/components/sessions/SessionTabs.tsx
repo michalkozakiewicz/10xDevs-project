@@ -17,14 +17,7 @@ interface SessionTabsProps {
  * Tabs component for switching between Estimation and Summary views
  * Uses Shadcn/ui Tabs component
  */
-export function SessionTabs({
-  value,
-  onValueChange,
-  cards,
-  sessionId,
-  onCardClick,
-  onCardsUpdate,
-}: SessionTabsProps) {
+export function SessionTabs({ value, onValueChange, cards, sessionId, onCardClick, onCardsUpdate }: SessionTabsProps) {
   return (
     <Tabs value={value} onValueChange={onValueChange} className="w-full">
       <div className="border-b bg-background">

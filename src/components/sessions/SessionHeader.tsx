@@ -52,12 +52,7 @@ export function SessionHeader({ sessionId, cardsCount, onAddTask, onImportCsv, o
             <Tooltip>
               <TooltipTrigger asChild>
                 <span>
-                  <Button
-                    onClick={onAiEstimate}
-                    variant="secondary"
-                    disabled={isAiEstimateDisabled}
-                    className="gap-2"
-                  >
+                  <Button onClick={onAiEstimate} variant="secondary" disabled={isAiEstimateDisabled} className="gap-2">
                     <Sparkles className="h-4 w-4" />
                     <span className="hidden sm:inline">Estymuj przez AI</span>
                   </Button>

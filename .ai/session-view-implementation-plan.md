@@ -9,6 +9,7 @@ Widok sesji estymacji jest głównym interfejsem aplikacji BucketEstimate AI, um
 **Ścieżka:** `/sessions/[id]`
 
 **Implementacja:**
+
 - Plik Astro: `src/pages/sessions/[id].astro`
 - Dynamiczny routing z parametrem `id` (UUID sesji)
 - Server-side sprawdzenie autentykacji użytkownika
@@ -54,6 +55,7 @@ SessionView (Astro page)
 **Opis:** Główna strona Astro służąca jako entry point dla widoku sesji. Obsługuje server-side rendering, autentykację i początkowe załadowanie danych.
 
 **Główne elementy:**
+
 - Server-side sprawdzenie autentykacji (`Astro.locals.supabase.auth.getUser()`)
 - Pobranie danych sesji z API (`GET /api/sessions/:id`)
 - Pobranie listy kart z API (`GET /api/sessions/:id/cards`)
@@ -61,14 +63,17 @@ SessionView (Astro page)
 - Obsługa błędów 401 (redirect do logowania) i 404 (redirect do `/sessions`)
 
 **Obsługiwane zdarzenia:**
+
 - Brak (server-side only)
 
 **Warunki walidacji:**
+
 - Użytkownik musi być zalogowany
 - Sesja musi istnieć
 - Sesja musi należeć do zalogowanego użytkownika (sprawdzane przez RLS)
 
 **Typy:**
+
 - `SessionDTO` - dane sesji
 - `CardDTO[]` - lista kart
 
@@ -81,6 +86,7 @@ SessionView (Astro page)
 **Opis:** Główny komponent kliencki zarządzający stanem widoku sesji, modal'ami i komunikacją z API. Orkiestruje wszystkie interakcje użytkownika.
 
 **Główne elementy:**
+
 - `SessionHeader` - nagłówek z akcjami
 - `SessionTabs` - zakładki Estymacja/Podsumowanie
 - `EstimationBoard` lub `SummaryTable` (zależnie od aktywnej zakładki)
@@ -89,6 +95,7 @@ SessionView (Astro page)
 - Toast notifications (Shadcn/ui Toaster)
 
 **Obsługiwane zdarzenia:**
+
 - `onAddTask` - otwarcie modala dodawania zadania
 - `onImportCsv` - otwarcie modala importu CSV
 - `onAiEstimate` - otwarcie modala AI estymacji
@@ -98,15 +105,18 @@ SessionView (Astro page)
 - `onTabChange` - zmiana zakładki
 
 **Warunki walidacji:**
+
 - Limit 50 kart w sesji (sprawdzany przed dodaniem/importem)
 - Sesja musi być aktywna (is_active === true)
 
 **Typy:**
+
 - `CardDTO[]` - lista kart
 - `TabValue` - "estimation" | "summary"
 - `ModalState` - stan otwarcia modali
 
 **Props:**
+
 ```typescript
 interface SessionClientProps {
   sessionId: string;
@@ -122,6 +132,7 @@ interface SessionClientProps {
 **Opis:** Nagłówek widoku sesji zawierający przycisk powrotu do listy sesji oraz akcje (Dodaj zadanie, Importuj CSV, Estymuj przez AI).
 
 **Główne elementy:**
+
 - `Button` - powrót do `/sessions` (variant="ghost", icon: ArrowLeft)
 - `div` - kontener na akcje (flex gap)
 - `Button` - "Dodaj zadanie" (variant="default", icon: Plus)
@@ -129,18 +140,22 @@ interface SessionClientProps {
 - `Button` - "Estymuj przez AI" (variant="secondary", icon: Sparkles)
 
 **Obsługiwane zdarzenia:**
+
 - `onClick` na przycisku powrotu - nawigacja do `/sessions`
 - `onClick` na "Dodaj zadanie" - wywołanie `onAddTask`
 - `onClick` na "Importuj CSV" - wywołanie `onImportCsv`
 - `onClick` na "Estymuj przez AI" - wywołanie `onAiEstimate`
 
 **Warunki walidacji:**
+
 - Przycisk "Estymuj przez AI" wyłączony gdy `cards.length === 0`
 
 **Typy:**
+
 - Brak specjalnych
 
 **Props:**
+
 ```typescript
 interface SessionHeaderProps {
   sessionId: string;
@@ -158,6 +173,7 @@ interface SessionHeaderProps {
 **Opis:** Komponent zakładek przełączający widok między estymacją a podsumowaniem.
 
 **Główne elementy:**
+
 - `Tabs` (Shadcn/ui) - root component
 - `TabsList` - kontener na triggery
 - `TabsTrigger` value="estimation" - "Estymacja"
@@ -166,15 +182,19 @@ interface SessionHeaderProps {
 - `TabsContent` value="summary" - zawiera SummaryTable
 
 **Obsługiwane zdarzenia:**
+
 - `onValueChange` - zmiana aktywnej zakładki
 
 **Warunki walidacji:**
+
 - Brak
 
 **Typy:**
+
 - `TabValue` = "estimation" | "summary"
 
 **Props:**
+
 ```typescript
 interface SessionTabsProps {
   value: TabValue;
@@ -193,25 +213,30 @@ interface SessionTabsProps {
 **Opis:** Główny kontener dla kubełków estymacji z obsługą drag-and-drop używając biblioteki dnd-kit. Zarządza stanem przeciągania i komunikacją z API przy zmianie pozycji kart.
 
 **Główne elementy:**
+
 - `DndContext` - context dla drag-and-drop (sensors: pointer, keyboard, touch)
 - `div` - scrollable container (horizontal scroll)
 - `Bucket[]` - 8 kubełków dla wartości: null, 1, 2, 3, 5, 8, 13, 21
 
 **Obsługiwane zdarzenia:**
+
 - `onDragStart` - rozpoczęcie przeciągania (visual feedback)
 - `onDragEnd` - zakończenie przeciągania (aktualizacja stanu, API call)
 - `onDragCancel` - anulowanie przeciągania
 
 **Warunki walidacji:**
+
 - Sprawdzenie czy karta należy do sesji
 - Sprawdzenie czy docelowy bucket jest prawidłowy
 - Batch update do API tylko gdy pozycja się zmieniła
 
 **Typy:**
+
 - `CardsByBucket` - mapa kart pogrupowanych po bucket_value
 - `DragEndEvent` - event z dnd-kit
 
 **Props:**
+
 ```typescript
 interface EstimationBoardProps {
   cards: CardDTO[];
@@ -228,6 +253,7 @@ interface EstimationBoardProps {
 **Opis:** Pojedynczy kubełek reprezentujący wartość estymacji. Obsługuje drop zone dla kart oraz wyświetla nagłówek z wartością i liczbą kart.
 
 **Główne elementy:**
+
 - `useDroppable` hook z dnd-kit
 - `div` - kontener kubełka (sticky header, gradient background)
 - `div` - header (value label, cards count badge)
@@ -235,15 +261,19 @@ interface EstimationBoardProps {
 - `TaskCard[]` - lista kart w kubełku
 
 **Obsługiwane zdarzenia:**
+
 - Drop event (obsługiwane przez DndContext w EstimationBoard)
 
 **Warunki walidacji:**
+
 - Brak (walidacja w EstimationBoard)
 
 **Typy:**
+
 - `BucketConfig` - konfiguracja kubełka (value, label, color)
 
 **Props:**
+
 ```typescript
 interface BucketProps {
   config: BucketConfig;
@@ -260,6 +290,7 @@ interface BucketConfig {
 ```
 
 **Kolory gradientu (Tailwind):**
+
 - 1: `bg-green-50 border-green-200` (zielony)
 - 2: `bg-green-100 border-green-300`
 - 3: `bg-yellow-50 border-yellow-200` (żółty)
@@ -276,6 +307,7 @@ interface BucketConfig {
 **Opis:** Pojedyncza karta zadania w kubełku. Draggable element z wizualnym feedbackiem przy przeciąganiu.
 
 **Główne elementy:**
+
 - `useDraggable` hook z dnd-kit
 - `Card` (Shadcn/ui)
 - `div` - external_id (badge, small text)
@@ -283,16 +315,20 @@ interface BucketConfig {
 - `Tooltip` (Shadcn/ui) - pełny tytuł na hover
 
 **Obsługiwane zdarzenia:**
+
 - `onClick` - otwarcie TaskDetailModal
 - Drag events (obsługiwane przez dnd-kit)
 
 **Warunki walidacji:**
+
 - Brak
 
 **Typy:**
+
 - `CardDTO`
 
 **Props:**
+
 ```typescript
 interface TaskCardProps {
   card: CardDTO;
@@ -302,6 +338,7 @@ interface TaskCardProps {
 ```
 
 **Style podczas drag:**
+
 - `opacity-50` - gdy isDragging
 - `shadow-lg scale-105` - visual feedback
 
@@ -312,6 +349,7 @@ interface TaskCardProps {
 **Opis:** Tabelaryczne podsumowanie estymacji wszystkich kart. Widok read-only.
 
 **Główne elementy:**
+
 - `Table` (Shadcn/ui)
 - `TableHeader` - nagłówki kolumn (ID, Tytuł, Wycena)
 - `TableBody`
@@ -321,15 +359,19 @@ interface TaskCardProps {
 - `TableCell` - bucket_value (badge z kolorem)
 
 **Obsługiwane zdarzenia:**
+
 - Brak (read-only)
 
 **Warunki walidacji:**
+
 - Brak
 
 **Typy:**
+
 - `CardDTO[]`
 
 **Props:**
+
 ```typescript
 interface SummaryTableProps {
   cards: CardDTO[];
@@ -345,6 +387,7 @@ interface SummaryTableProps {
 **Opis:** Stan pustej sesji wyświetlany gdy brak kart. Zawiera CTA do dodania zadania lub importu CSV.
 
 **Główne elementy:**
+
 - `div` - kontener (centered, flex column)
 - `Icon` - ilustracja (Inbox lub podobna)
 - `h3` - "Brak zadań w sesji"
@@ -354,16 +397,20 @@ interface SummaryTableProps {
 - `Button` - "Importuj CSV" (secondary)
 
 **Obsługiwane zdarzenia:**
+
 - `onClick` na "Dodaj zadanie" - wywołanie `onAddTask`
 - `onClick` na "Importuj CSV" - wywołanie `onImportCsv`
 
 **Warunki walidacji:**
+
 - Wyświetlany tylko gdy `cards.length === 0`
 
 **Typy:**
+
 - Brak
 
 **Props:**
+
 ```typescript
 interface EmptyBoardStateProps {
   onAddTask: () => void;
@@ -378,6 +425,7 @@ interface EmptyBoardStateProps {
 **Opis:** Modal z formularzem do ręcznego dodania pojedynczego zadania.
 
 **Główne elementy:**
+
 - `Dialog` (Shadcn/ui) - root
 - `DialogContent` - modal content
 - `DialogHeader` - "Dodaj zadanie"
@@ -390,20 +438,24 @@ interface EmptyBoardStateProps {
 - `Button` - "Dodaj zadanie" (type="submit", disabled gdy invalid)
 
 **Obsługiwane zdarzenia:**
+
 - `onSubmit` - walidacja i wywołanie API POST /cards
 - `onOpenChange` - zamknięcie modala (Escape lub klik poza)
 
 **Warunki walidacji:**
+
 - `external_id`: required, min 1 znak
 - `title`: required, min 1 znak
 - `description`: optional
 - Frontend sprawdzenie: czy sesja ma < 50 kart (przed otwarciem modala)
 
 **Typy:**
+
 - `CardCreateCommand` - request body
 - `CardResponseDTO` - response
 
 **Props:**
+
 ```typescript
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -415,6 +467,7 @@ interface AddTaskModalProps {
 ```
 
 **Obsługa błędów:**
+
 - 409 Conflict (duplicate external_id) - error message przy polu external_id
 - 422 Unprocessable Entity (limit) - toast error, close modal
 - 400 Bad Request - toast z opisem błędu
@@ -426,6 +479,7 @@ interface AddTaskModalProps {
 **Opis:** Modal do importu zadań z pliku CSV. Zawiera drag-drop zone i wyświetla wyniki importu.
 
 **Główne elementy:**
+
 - `Dialog` (Shadcn/ui)
 - `DialogContent`
 - `DialogHeader` - "Importuj zadania z CSV"
@@ -442,20 +496,24 @@ interface AddTaskModalProps {
 - `Button` - "Importuj" (disabled gdy brak pliku, loading podczas importu)
 
 **Obsługiwane zdarzenia:**
+
 - `onDrop` - parsowanie pliku CSV
 - `onSubmit` - wywołanie API POST /cards/import
 - `onOpenChange` - zamknięcie modala
 
 **Warunki walidacji:**
+
 - Format CSV: musi mieć kolumny id, title (description opcjonalne)
 - Max 50 kart total w sesji (frontend check)
 - Parsowanie CSV: sprawdzenie czy każdy wiersz ma wymagane pola
 
 **Typy:**
+
 - `CardImportCommand` - request body (csv_content jako string)
 - `CardImportResultDTO` - response
 
 **Props:**
+
 ```typescript
 interface ImportCsvModalProps {
   isOpen: boolean;
@@ -467,6 +525,7 @@ interface ImportCsvModalProps {
 ```
 
 **Obsługa błędów:**
+
 - 400 Bad Request (invalid CSV) - toast error z opisem
 - 422 Unprocessable Entity (limit) - toast error
 - Wyświetlenie listy failed rows z opisem błędów
@@ -478,6 +537,7 @@ interface ImportCsvModalProps {
 **Opis:** Modal do uruchomienia automatycznej estymacji przez AI. Zawiera ostrzeżenie o nadpisaniu obecnego układu.
 
 **Główne elementy:**
+
 - `Dialog` (Shadcn/ui)
 - `DialogContent`
 - `DialogHeader` - "Automatyczna estymacja przez AI"
@@ -492,18 +552,22 @@ interface ImportCsvModalProps {
 - `Button` - "Estymuj" (disabled gdy !confirm_override, loading podczas estymacji)
 
 **Obsługiwane zdarzenia:**
+
 - `onSubmit` - walidacja i wywołanie API POST /ai/estimate
 - `onOpenChange` - zamknięcie modala
 
 **Warunki walidacji:**
+
 - `confirm_override`: required (checkbox must be checked)
 - Sesja musi mieć karty (sprawdzane przed otwarciem modala)
 
 **Typy:**
+
 - `AIEstimateCommand` - request body
 - `AIEstimateResultDTO` - response
 
 **Props:**
+
 ```typescript
 interface AiEstimationModalProps {
   isOpen: boolean;
@@ -515,6 +579,7 @@ interface AiEstimationModalProps {
 ```
 
 **Obsługa błędów:**
+
 - 400 Bad Request (no cards) - nie powinno się zdarzyć (walidacja przed otwarciem)
 - 503 Service Unavailable - toast error, możliwość retry
 - 429 Too Many Requests - toast error z informacją o limicie
@@ -526,6 +591,7 @@ interface AiEstimationModalProps {
 **Opis:** Modal ze szczegółami zadania. Wyświetla pełny opis oraz umożliwia usunięcie zadania.
 
 **Główne elementy:**
+
 - `Dialog` (Shadcn/ui)
 - `DialogContent`
 - `DialogHeader` - title z external_id badge
@@ -547,18 +613,22 @@ interface AiEstimationModalProps {
   - `AlertDialogAction` - "Usuń" (variant="destructive")
 
 **Obsługiwane zdarzenia:**
+
 - `onOpenChange` - zamknięcie modala
 - `onClick` na "Usuń zadanie" - otwarcie AlertDialog
 - `onClick` na AlertDialogAction - wywołanie API DELETE /cards/:id (optimistic)
 
 **Warunki walidacji:**
+
 - Karta musi istnieć
 - Karta musi należeć do sesji
 
 **Typy:**
+
 - `CardDTO`
 
 **Props:**
+
 ```typescript
 interface TaskDetailModalProps {
   isOpen: boolean;
@@ -570,10 +640,12 @@ interface TaskDetailModalProps {
 ```
 
 **Obsługa błędów:**
+
 - 404 Not Found - toast error, close modal
 - 500 Internal Server Error - toast error
 
 **Optimistic UI:**
+
 - Natychmiastowe usunięcie karty z UI po kliknięciu "Usuń"
 - Toast success
 - Jeśli błąd API - toast error (karta pozostaje usunięta, user musi ręcznie odświeżyć)
@@ -803,6 +875,7 @@ export const BUCKET_CONFIGS: BucketConfig[] = [
 **Cel:** Centralizacja zarządzania stanem kart sesji oraz komunikacja z API.
 
 **Stan:**
+
 ```typescript
 interface UseSessionCardsState {
   cards: CardDTO[];
@@ -812,6 +885,7 @@ interface UseSessionCardsState {
 ```
 
 **Funkcje:**
+
 ```typescript
 interface UseSessionCardsReturn {
   cards: CardDTO[];
@@ -832,6 +906,7 @@ interface UseSessionCardsReturn {
 ```
 
 **Implementacja:**
+
 - Używa `useState` dla cards, loading, error
 - Wszystkie funkcje API używają `fetch` z odpowiednimi headers
 - Obsługa błędów: try-catch, ustawienie error state, toast notification
@@ -845,6 +920,7 @@ interface UseSessionCardsReturn {
 **Cel:** Zarządzanie stanem otwarcia modali.
 
 **Stan:**
+
 ```typescript
 interface UseModalsState {
   addTask: boolean;
@@ -856,6 +932,7 @@ interface UseModalsState {
 ```
 
 **Funkcje:**
+
 ```typescript
 interface UseModalsReturn {
   modals: UseModalsState;
@@ -875,6 +952,7 @@ interface UseModalsReturn {
 ### 6.3 Local State w SessionClient
 
 **Wykorzystanie:**
+
 ```typescript
 const SessionClient: React.FC<SessionClientProps> = ({ sessionId, initialCards, sessionData }) => {
   const { cards, loading, error, ...cardActions } = useSessionCards(sessionId, initialCards);
@@ -890,15 +968,12 @@ const SessionClient: React.FC<SessionClientProps> = ({ sessionId, initialCards, 
 ### 6.4 Drag-and-Drop State (w EstimationBoard)
 
 **Wykorzystanie dnd-kit:**
+
 ```typescript
 const EstimationBoard: React.FC<EstimationBoardProps> = ({ cards, sessionId, onCardsUpdate, onCardClick }) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor),
-    useSensor(TouchSensor)
-  );
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor), useSensor(TouchSensor));
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -928,6 +1003,7 @@ const EstimationBoard: React.FC<EstimationBoardProps> = ({ cards, sessionId, onC
 **Endpoint:** `GET /api/sessions/:id/cards`
 
 **Request:**
+
 ```typescript
 // Server-side fetch
 const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
@@ -938,6 +1014,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ```
 
 **Response:** `CardsListResponseDTO`
+
 ```typescript
 {
   data: CardDTO[]
@@ -945,6 +1022,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ```
 
 **Obsługa błędów:**
+
 - 401 → redirect do `/login`
 - 404 → redirect do `/sessions` z toast "Sesja nie znaleziona"
 
@@ -955,6 +1033,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 **Endpoint:** `POST /api/sessions/:sessionId/cards`
 
 **Request:** `CardCreateCommand`
+
 ```typescript
 {
   external_id: string;
@@ -964,13 +1043,15 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ```
 
 **Response:** `CardResponseDTO`
+
 ```typescript
 {
-  data: CardDTO
+  data: CardDTO;
 }
 ```
 
 **Obsługa błędów:**
+
 - 400 → toast z opisem błędu
 - 409 → error message przy polu external_id "Zadanie o tym ID już istnieje"
 - 422 → toast "Przekroczono limit 50 zadań"
@@ -982,6 +1063,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 **Endpoint:** `POST /api/sessions/:sessionId/cards/import`
 
 **Request:** `CardImportCommand`
+
 ```typescript
 {
   csv_content: string; // CSV as string
@@ -989,6 +1071,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ```
 
 **Response:** `CardImportResultDTO`
+
 ```typescript
 {
   data: {
@@ -1001,6 +1084,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ```
 
 **Obsługa błędów:**
+
 - 400 → toast "Nieprawidłowy format CSV"
 - 422 → toast "Import przekroczyłby limit 50 zadań"
 - Wyświetlenie listy failed rows w modalu
@@ -1012,15 +1096,15 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 **Endpoint:** `PATCH /api/sessions/:sessionId/cards`
 
 **Request:** `CardBatchUpdateCommand`
+
 ```typescript
 {
-  cards: [
-    { id: string, bucket_value: BucketValue }
-  ]
+  cards: [{ id: string, bucket_value: BucketValue }];
 }
 ```
 
 **Response:** `CardBatchUpdateResponseDTO`
+
 ```typescript
 {
   data: {
@@ -1031,6 +1115,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ```
 
 **Obsługa błędów:**
+
 - 400 → toast "Błąd podczas zapisywania" (brak rollback)
 - 404 → toast "Zadanie nie znalezione", refresh cards
 
@@ -1045,10 +1130,12 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 **Response:** `204 No Content`
 
 **Obsługa błędów:**
+
 - 404 → toast "Zadanie nie znalezione"
 - 500 → toast "Błąd podczas usuwania"
 
 **Optimistic UI:**
+
 - Natychmiastowe usunięcie ze state
 - Toast success
 - Jeśli error → toast error (karta pozostaje usunięta)
@@ -1060,6 +1147,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 **Endpoint:** `POST /api/sessions/:sessionId/ai/estimate`
 
 **Request:** `AIEstimateCommand`
+
 ```typescript
 {
   confirm_override: boolean;
@@ -1067,6 +1155,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ```
 
 **Response:** `AIEstimateResultDTO`
+
 ```typescript
 {
   data: {
@@ -1077,6 +1166,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ```
 
 **Obsługa błędów:**
+
 - 400 → toast "Brak zadań do estymacji"
 - 503 → toast "Usługa AI niedostępna, spróbuj ponownie"
 - 429 → toast "Przekroczono limit zapytań, spróbuj za chwilę"
@@ -1088,6 +1178,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 8.1 Dodawanie zadania
 
 **Przepływ:**
+
 1. Klik "Dodaj zadanie" → `openAddTask()`
 2. Otwarcie `AddTaskModal`
 3. Wypełnienie formularza (external_id*, title*, description)
@@ -1108,6 +1199,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 8.2 Import CSV
 
 **Przepływ:**
+
 1. Klik "Importuj CSV" → `openImportCsv()`
 2. Otwarcie `ImportCsvModal`
 3. Drag-and-drop pliku CSV lub klik na drop zone
@@ -1130,6 +1222,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 8.3 Drag-and-Drop karty
 
 **Przepływ:**
+
 1. Użytkownik zaczyna przeciągać kartę (`onDragStart`)
 2. Visual feedback:
    - Karta: `opacity-50`
@@ -1146,6 +1239,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Brak rollback (karta pozostaje w nowym kubełku)
 
 **Keyboard navigation:**
+
 - Tab → focus na karcie
 - Space → start drag
 - Arrow keys → move between buckets
@@ -1157,6 +1251,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 8.4 AI Estymacja
 
 **Przepływ:**
+
 1. Klik "Estymuj przez AI" → sprawdzenie `cards.length > 0`
 2. Jeśli brak kart → toast "Brak zadań do estymacji", return
 3. Otwarcie `AiEstimationModal`
@@ -1178,6 +1273,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 8.5 Szczegóły zadania
 
 **Przepływ:**
+
 1. Klik na kartę → `openTaskDetail(card)`
 2. Otwarcie `TaskDetailModal`
 3. Wyświetlenie szczegółów:
@@ -1205,6 +1301,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 8.6 Zmiana zakładki
 
 **Przepływ:**
+
 1. Klik "Podsumowanie" → `setActiveTab("summary")`
 2. TabsContent zmienia się z EstimationBoard na SummaryTable
 3. SummaryTable wyświetla tabelę:
@@ -1219,6 +1316,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 9.1 Walidacja frontend (przed wysłaniem do API)
 
 **AddTaskModal:**
+
 - `external_id`:
   - Required
   - Min length: 1
@@ -1234,6 +1332,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
   - Jeśli >= 50 → toast "Osiągnięto limit 50 zadań", nie otwieraj modala
 
 **ImportCsvModal:**
+
 - Format CSV:
   - Musi mieć header: `id,title,description` (lub `id,title`)
   - Każdy wiersz musi mieć wypełnione `id` i `title`
@@ -1243,6 +1342,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
   - Jeśli przekracza → toast error, disable przycisk "Importuj"
 
 **AiEstimationModal:**
+
 - `confirm_override`:
   - Required (checkbox must be checked)
   - Disable przycisk "Estymuj" gdy unchecked
@@ -1251,6 +1351,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
   - Jeśli brak → toast "Brak zadań do estymacji"
 
 **Drag-and-Drop:**
+
 - Sprawdzenie czy `over.id` (target bucket) jest prawidłowym `BucketValue`
 - Jeśli invalid → cancel drop, brak API call
 
@@ -1259,6 +1360,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 9.2 Walidacja backend (API responses)
 
 **POST /cards:**
+
 - 400 Bad Request → missing required fields
   - Toast: "Wypełnij wszystkie wymagane pola"
 - 409 Conflict → duplicate external_id
@@ -1267,24 +1369,28 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
   - Toast: "Sesja osiągnęła maksymalny limit 50 zadań"
 
 **POST /cards/import:**
+
 - 400 Bad Request → invalid CSV format
   - Toast: "Nieprawidłowy format CSV. Sprawdź czy plik zawiera kolumny: id, title"
 - 422 Unprocessable Entity → import would exceed limit
   - Toast: "Import przekroczyłby limit 50 zadań. Obecna liczba: X, próba importu: Y"
 
 **PATCH /cards (batch):**
+
 - 400 Bad Request → invalid bucket_value
   - Toast: "Błąd podczas zapisywania zmian"
 - 404 Not Found → card not found
   - Toast: "Zadanie nie znalezione", refresh cards
 
 **DELETE /cards/:id:**
+
 - 404 Not Found → card not found
   - Toast: "Zadanie nie znalezione"
 - 500 Internal Server Error
   - Toast: "Błąd podczas usuwania zadania"
 
 **POST /ai/estimate:**
+
 - 400 Bad Request → no cards or missing confirm_override
   - Toast: "Brak zadań do estymacji"
 - 503 Service Unavailable → AI service down
@@ -1298,21 +1404,25 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 9.3 Warunki UI
 
 **SessionHeader:**
+
 - Przycisk "Estymuj przez AI":
   - Disabled gdy `cards.length === 0`
   - Tooltip: "Brak zadań do estymacji"
 
 **EstimationBoard vs EmptyBoardState:**
+
 - Jeśli `cards.length === 0` → wyświetl `EmptyBoardState`
 - Jeśli `cards.length > 0` → wyświetl `EstimationBoard`
 
 **SummaryTable:**
+
 - Jeśli `cards.length === 0` → wyświetl pusty stan: "Brak zadań w sesji"
 - Sortowanie:
   - Primary: `bucket_value` ASC (null first)
   - Secondary: `external_id` ASC
 
 **TaskCard tooltip:**
+
 - Wyświetl tooltip z pełnym tytułem tylko gdy tytuł jest obcięty (line-clamp-2)
 - Sprawdzenie: `element.scrollHeight > element.clientHeight`
 
@@ -1325,6 +1435,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 **Scenariusz:** Token JWT wygasł lub jest nieprawidłowy
 
 **Obsługa:**
+
 - Server-side (w SessionView Astro):
   - Redirect do `/login` z query param `?redirect=/sessions/${id}`
 - Client-side (w useSessionCards):
@@ -1337,6 +1448,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 **Scenariusz:** Sesja nie istnieje lub nie należy do użytkownika
 
 **Obsługa:**
+
 - Server-side (w SessionView Astro):
   - Redirect do `/sessions` z flash message "Sesja nie znaleziona"
 - Client-side:
@@ -1347,6 +1459,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 10.3 Błędy walidacji (400, 409, 422)
 
 **Obsługa:**
+
 - 400 Bad Request:
   - Parse `APIErrorDTO.details` jeśli dostępne
   - Wyświetl toast z opisem błędu: `error.message`
@@ -1365,6 +1478,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 10.4 Błędy serwera (500, 503)
 
 **Obsługa:**
+
 - 500 Internal Server Error:
   - Toast: "Wystąpił nieoczekiwany błąd. Spróbuj ponownie."
   - Log error do console
@@ -1379,6 +1493,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 10.5 Błędy rate limiting (429)
 
 **Obsługa:**
+
 - Toast: "Przekroczono limit zapytań. Spróbuj ponownie za kilka minut."
 - Parse `Retry-After` header jeśli dostępny
 - Disable przycisk "Estymuj przez AI" na X sekund
@@ -1389,6 +1504,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 10.6 Błędy sieci (NetworkError)
 
 **Obsługa:**
+
 - Catch w try-catch jako generic error
 - Toast: "Błąd połączenia. Sprawdź połączenie internetowe."
 - Opcjonalnie: Retry button
@@ -1399,6 +1515,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### 10.7 Błędy parsowania CSV
 
 **Obsługa:**
+
 - Podczas parsowania pliku w ImportCsvModal:
   - Sprawdzenie formatu (header, kolumny)
   - Walidacja każdego wiersza
@@ -1416,6 +1533,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 1: Struktura projektu i typy
 
 **Zadania:**
+
 1. Utworzenie pliku strony: `src/pages/sessions/[id].astro`
 2. Dodanie nowych typów ViewModel do pliku pomocniczego:
    - Utworzenie `src/lib/types/session-view.types.ts`
@@ -1424,6 +1542,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 3. Weryfikacja istniejących typów w `src/types.ts`
 
 **Weryfikacja:**
+
 - TypeScript compiles bez błędów
 - Wszystkie typy zaimportowane poprawnie
 
@@ -1432,10 +1551,15 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 2: Astro page - SessionView
 
 **Zadania:**
+
 1. Implementacja server-side logic w `src/pages/sessions/[id].astro`:
+
    ```typescript
    // Sprawdzenie autentykacji
-   const { data: { user }, error: authError } = await Astro.locals.supabase.auth.getUser();
+   const {
+     data: { user },
+     error: authError,
+   } = await Astro.locals.supabase.auth.getUser();
    if (authError || !user) {
      return Astro.redirect("/login?redirect=" + Astro.url.pathname);
    }
@@ -1443,7 +1567,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    // Pobranie danych sesji
    const sessionId = Astro.params.id;
    const sessionResponse = await fetch(`${Astro.url.origin}/api/sessions/${sessionId}`, {
-     headers: { Authorization: `Bearer ${token}` }
+     headers: { Authorization: `Bearer ${token}` },
    });
 
    if (!sessionResponse.ok) {
@@ -1454,7 +1578,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 
    // Pobranie kart
    const cardsResponse = await fetch(`${Astro.url.origin}/api/sessions/${sessionId}/cards`, {
-     headers: { Authorization: `Bearer ${token}` }
+     headers: { Authorization: `Bearer ${token}` },
    });
 
    const { data: cards } = await cardsResponse.json();
@@ -1462,15 +1586,11 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 
 2. Przekazanie danych do SessionClient:
    ```astro
-   <SessionClient
-     client:load
-     sessionId={sessionId}
-     initialCards={cards}
-     sessionData={session}
-   />
+   <SessionClient client:load sessionId={sessionId} initialCards={cards} sessionData={session} />
    ```
 
 **Weryfikacja:**
+
 - Autentykacja działa (redirect do /login gdy brak tokena)
 - Dane sesji i kart są poprawnie pobrane
 - Props przekazane do SessionClient
@@ -1480,6 +1600,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 3: Custom Hooks
 
 **Zadania:**
+
 1. Implementacja `src/components/hooks/useSessionCards.ts`:
    - Stan: cards, loading, error
    - Funkcje: fetchCards, addCard, updateCard, deleteCard, batchUpdateCards, importCards, runAiEstimation
@@ -1491,6 +1612,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Funkcje: open/close dla każdego modala
 
 **Weryfikacja:**
+
 - Hooks działają z mock data
 - API calls są poprawnie wykonywane
 - Error handling działa
@@ -1500,6 +1622,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 4: Komponenty podstawowe (non-modal)
 
 **Zadania:**
+
 1. **SessionClient** (`src/components/SessionClient.tsx`):
    - Import hooks: useSessionCards, useModals
    - Stan: activeTab
@@ -1520,6 +1643,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - CTA actions
 
 **Weryfikacja:**
+
 - Komponenty renderują się poprawnie
 - Przyciski wywołują odpowiednie funkcje
 - Tabs switching działa
@@ -1529,7 +1653,9 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 5: Estimation Board i Drag-and-Drop
 
 **Zadania:**
+
 1. Instalacja dnd-kit:
+
    ```bash
    npm install @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities
    ```
@@ -1555,6 +1681,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Tooltip z pełnym tytułem
 
 **Weryfikacja:**
+
 - Drag-and-drop działa (mouse, touch, keyboard)
 - Visual feedback podczas drag
 - Bucket highlight podczas hover
@@ -1565,6 +1692,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 6: Summary Table
 
 **Zadania:**
+
 1. **SummaryTable** (`src/components/SummaryTable.tsx`):
    - Table z Shadcn/ui
    - Kolumny: ID, Tytuł, Wycena
@@ -1573,6 +1701,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Empty state: "Brak zadań w sesji"
 
 **Weryfikacja:**
+
 - Tabela renderuje wszystkie karty
 - Sortowanie działa poprawnie
 - Kolory badge są spójne z kubełkami
@@ -1582,6 +1711,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 7: Modale - AddTaskModal
 
 **Zadania:**
+
 1. **AddTaskModal** (`src/components/AddTaskModal.tsx`):
    - Dialog z Shadcn/ui
    - Form z react-hook-form + zod schema
@@ -1592,6 +1722,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Error handling: field errors, toast
 
 **Weryfikacja:**
+
 - Modal otwiera się i zamyka
 - Walidacja działa
 - Submit wywołuje API
@@ -1603,6 +1734,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 8: Modale - ImportCsvModal
 
 **Zadania:**
+
 1. **ImportCsvModal** (`src/components/ImportCsvModal.tsx`):
    - Dialog z Shadcn/ui
    - DropZone (custom lub biblioteka react-dropzone)
@@ -1613,6 +1745,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Submit handler
 
 **Weryfikacja:**
+
 - Drag-and-drop działa
 - CSV parsing działa
 - Preview pokazuje dane
@@ -1625,6 +1758,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 9: Modale - AiEstimationModal
 
 **Zadania:**
+
 1. **AiEstimationModal** (`src/components/AiEstimationModal.tsx`):
    - Dialog z Shadcn/ui
    - Alert z ostrzeżeniem (Shadcn/ui Alert)
@@ -1634,6 +1768,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Loading state (spinner, blocking)
 
 **Weryfikacja:**
+
 - Modal otwiera się
 - Ostrzeżenie jest widoczne
 - Checkbox required działa
@@ -1646,6 +1781,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 10: Modale - TaskDetailModal
 
 **Zadania:**
+
 1. **TaskDetailModal** (`src/components/TaskDetailModal.tsx`):
    - Dialog z Shadcn/ui
    - Wyświetlenie szczegółów karty
@@ -1655,6 +1791,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Delete handler (optimistic UI)
 
 **Weryfikacja:**
+
 - Modal otwiera się z poprawnymi danymi
 - Wszystkie pola są wyświetlone
 - AlertDialog działa
@@ -1667,17 +1804,21 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 11: Toast Notifications
 
 **Zadania:**
+
 1. Dodanie Shadcn/ui Toaster do layoutu:
+
    ```bash
    npx shadcn@latest add toast
    ```
 
 2. Import Toaster w SessionClient lub głównym layout:
+
    ```tsx
    import { Toaster } from "@/components/ui/toaster";
    ```
 
 3. Użycie toast w hook'ach i komponentach:
+
    ```tsx
    import { toast } from "@/components/ui/use-toast";
 
@@ -1694,6 +1835,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    ```
 
 **Weryfikacja:**
+
 - Toast wyświetla się po akcjach
 - Różne warianty (success, error) działają
 - Toast auto-dismiss działa
@@ -1703,7 +1845,9 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 12: Skeleton Loading
 
 **Zadania:**
+
 1. Dodanie Shadcn/ui Skeleton:
+
    ```bash
    npx shadcn@latest add skeleton
    ```
@@ -1714,10 +1858,13 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 
 3. Conditional rendering w SessionClient:
    ```tsx
-   {loading ? <LoadingSkeleton /> : <EstimationBoard />}
+   {
+     loading ? <LoadingSkeleton /> : <EstimationBoard />;
+   }
    ```
 
 **Weryfikacja:**
+
 - Skeleton wyświetla się podczas initial load
 - Skeleton layout przypomina rzeczywisty widok
 - Transition do rzeczywistych danych jest smooth
@@ -1727,6 +1874,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 13: Accessibility i Keyboard Navigation
 
 **Zadania:**
+
 1. **Focus trap w modalach:**
    - Shadcn/ui Dialog już ma focus trap
    - Weryfikacja: Tab key nie ucieka z modala
@@ -1748,6 +1896,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Anuluje drag-and-drop
 
 **Weryfikacja:**
+
 - Screen reader test (NVDA/JAWS)
 - Keyboard-only navigation test
 - Focus indicators są widoczne
@@ -1757,6 +1906,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 14: Responsive Design
 
 **Zadania:**
+
 1. **Mobile layout:**
    - EstimationBoard: vertical scroll + horizontal scroll dla kubełków
    - Buckets: min-width 200px
@@ -1772,6 +1922,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Sticky headers
 
 **Weryfikacja:**
+
 - Test na różnych rozdzielczościach (320px, 768px, 1024px, 1920px)
 - Horizontal scroll działa
 - Touch gestures działają na mobile
@@ -1781,7 +1932,9 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 15: Error Boundaries
 
 **Zadania:**
+
 1. Utworzenie ErrorBoundary component:
+
    ```tsx
    // src/components/ErrorBoundary.tsx
    class ErrorBoundary extends React.Component {
@@ -1790,6 +1943,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    ```
 
 2. Wrap SessionClient w ErrorBoundary:
+
    ```tsx
    <ErrorBoundary fallback={<ErrorFallback />}>
      <SessionClient />
@@ -1802,6 +1956,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Przycisk "Wróć do listy sesji"
 
 **Weryfikacja:**
+
 - Symulacja błędu renderowania
 - ErrorBoundary wychwytuje błąd
 - Fallback UI wyświetla się
@@ -1811,6 +1966,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 16: Testowanie
 
 **Zadania:**
+
 1. **Unit tests:**
    - useSessionCards hook (mocked fetch)
    - useModals hook
@@ -1831,6 +1987,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Critical user journeys
 
 **Weryfikacja:**
+
 - Wszystkie testy przechodzą
 - Coverage > 70%
 
@@ -1839,11 +1996,13 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 17: Performance Optimization
 
 **Zadania:**
+
 1. **React.memo dla komponentów:**
    - TaskCard (re-render tylko gdy card data zmienia się)
    - Bucket (re-render tylko gdy cards w bucket zmieniają się)
 
 2. **useMemo dla grupowania kart:**
+
    ```tsx
    const cardsByBucket = useMemo(() => {
      return groupCardsByBucket(cards);
@@ -1851,15 +2010,20 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    ```
 
 3. **useCallback dla handlers:**
+
    ```tsx
-   const handleCardClick = useCallback((card: CardDTO) => {
-     openTaskDetail(card);
-   }, [openTaskDetail]);
+   const handleCardClick = useCallback(
+     (card: CardDTO) => {
+       openTaskDetail(card);
+     },
+     [openTaskDetail]
+   );
    ```
 
 4. **Debounce dla search (jeśli dodane w przyszłości)**
 
 **Weryfikacja:**
+
 - React DevTools Profiler
 - Brak niepotrzebnych re-renders
 - Smooth drag-and-drop (60fps)
@@ -1869,6 +2033,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 18: Dokumentacja i Code Review
 
 **Zadania:**
+
 1. **JSDoc dla funkcji:**
    - Wszystkie exported functions
    - Props interfaces
@@ -1886,6 +2051,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Accessibility guidelines
 
 **Weryfikacja:**
+
 - Code review passed
 - Dokumentacja aktualna
 - No TS/ESLint errors
@@ -1895,11 +2061,13 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 19: Deployment Preparation
 
 **Zadania:**
+
 1. **Environment variables:**
    - Weryfikacja wszystkich env vars
    - .env.example aktualizacja
 
 2. **Build test:**
+
    ```bash
    npm run build
    ```
@@ -1910,6 +2078,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Error reporting (Sentry) skonfigurowane
 
 **Weryfikacja:**
+
 - Build succeeds
 - No build warnings
 - Preview działa lokalnie
@@ -1919,6 +2088,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ### Krok 20: Final Testing i Launch
 
 **Zadania:**
+
 1. **Manual QA:**
    - Testowanie wszystkich user flows
    - Testowanie error scenarios
@@ -1936,6 +2106,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
    - Input sanitization
 
 **Weryfikacja:**
+
 - Wszystkie testy passed
 - No critical bugs
 - Ready for production
@@ -1945,6 +2116,7 @@ const response = await fetch(`${Astro.url.origin}/api/sessions/${id}/cards`, {
 ## Podsumowanie
 
 Plan implementacji widoku sesji estymacji obejmuje:
+
 - **20 kroków** od struktury projektu do deployment
 - **13 głównych komponentów** (page, client, header, tabs, board, bucket, card, table, empty state, 4 modale)
 - **2 custom hooks** (useSessionCards, useModals)

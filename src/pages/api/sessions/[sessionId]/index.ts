@@ -30,11 +30,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
     }
 
     // Fetch session from database
-    const { data: session, error } = await locals.supabase
-      .from("sessions")
-      .select("*")
-      .eq("id", sessionId!)
-      .single();
+    const { data: session, error } = await locals.supabase.from("sessions").select("*").eq("id", sessionId!).single();
 
     if (error || !session) {
       return new Response(

@@ -17,7 +17,13 @@ interface TaskCardProps {
  * Click opens TaskDetailModal, drag moves card between buckets
  */
 export function TaskCard({ card, onClick, isDragging = false }: TaskCardProps) {
-  const { attributes, listeners, setNodeRef, transform, isDragging: isDraggingFromKit } = useDraggable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    isDragging: isDraggingFromKit,
+  } = useDraggable({
     id: card.id,
   });
 
@@ -68,9 +74,7 @@ export function TaskCard({ card, onClick, isDragging = false }: TaskCardProps) {
           </TooltipProvider>
 
           {/* Description indicator */}
-          {card.description && (
-            <p className="line-clamp-1 text-xs text-muted-foreground">{card.description}</p>
-          )}
+          {card.description && <p className="line-clamp-1 text-xs text-muted-foreground">{card.description}</p>}
         </div>
       </div>
     </Card>

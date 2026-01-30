@@ -75,15 +75,58 @@ Poza zakresem MVP znajdują się:
 
 ### US-001
 
-Tytuł: Uwierzytelnienie użytkownika  
-Opis: Jako użytkownik chcę zalogować się do aplikacji, aby mieć bezpieczny dostęp do sesji estymacji.  
+ID: US-001
+Tytuł: Rejestracja konta
+Opis: Jako użytkownik chcę założyć konto używając nazwy użytkownika i hasła, aby zapisywać fiszki i postępy.
 Kryteria akceptacji:
 
-- Użytkownik może zalogować się przy użyciu adresu email.
-- Niezalogowany użytkownik nie ma dostępu do widoku sesji.
-- Po poprawnym logowaniu użytkownik trafia do pustej sesji.
+Formularz rejestracji zawiera pola: nazwa użytkownika, hasło, potwierdzenie hasła.
+Walidacja: nazwa użytkownika wymagana; hasło wymagane; hasła muszą być zgodne.
+Po udanej rejestracji użytkownik jest zalogowany lub przekierowany do logowania z jasnym komunikatem sukcesu.
+Próba rejestracji z zajętą nazwą użytkownika kończy się komunikatem błędu.
 
 ### US-002
+
+ID: US-002
+Tytuł: Logowanie
+Opis: Jako użytkownik chcę zalogować się nazwą użytkownika i hasłem, aby uzyskać dostęp do swoich fiszek.
+Kryteria akceptacji:
+
+Formularz logowania zawiera pola: nazwa użytkownika, hasło.
+Poprawne dane logują użytkownika i zapewniają dostęp do widoków aplikacji.
+Błędne dane nie logują użytkownika i pokazują komunikat błędu bez ujawniania, czy konto istnieje.
+
+### US-003
+
+ID: US-003
+Tytuł: Wylogowanie
+Opis: Jako użytkownik chcę się wylogować, aby zakończyć sesję na współdzielonym urządzeniu.
+Kryteria akceptacji:
+
+Widoczny jest przycisk wylogowania dla zalogowanego użytkownika.
+Po wylogowaniu zasoby wymagające autoryzacji nie są dostępne bez ponownego logowania.
+
+### US-004
+
+ID: US-004
+Tytuł: Izolacja danych między użytkownikami (autoryzacja)
+Opis: Jako użytkownik chcę mieć pewność, że inni użytkownicy nie mają dostępu do moich fiszek i postępów.
+Kryteria akceptacji:
+
+Zalogowany użytkownik widzi wyłącznie fiszki i dane powtórek przypisane do jego konta.
+Próba dostępu do zasobu innego użytkownika (np. przez manipulację ID) skutkuje odmową (np. 403/404) i nie ujawnia danych.
+
+### US-005
+
+ID: US-005
+Tytuł: Obsługa wygaśniętej sesji
+Opis: Jako użytkownik chcę dostać jasną informację i możliwość ponownego logowania, gdy moja sesja wygaśnie.
+Kryteria akceptacji:
+
+Gdy sesja wygaśnie, próba wejścia na chroniony widok przekierowuje do logowania.
+Po zalogowaniu użytkownik wraca do głównego widoku aplikacji.
+
+### US-006
 
 Tytuł: Import kart z CSV  
 Opis: Jako facylitator chcę zaimportować listę zadań z pliku CSV, aby szybko rozpocząć sesję.  
@@ -93,7 +136,7 @@ Kryteria akceptacji:
 - Po imporcie wyświetlana jest liczba poprawnie wczytanych kart.
 - Błędne wiersze są pomijane i raportowane.
 
-### US-003
+### US-007
 
 Tytuł: Ręczne dodanie karty  
 Opis: Jako facylitator chcę dodać pojedyncze zadanie ręcznie, aby uzupełnić backlog ad-hoc.  
@@ -103,7 +146,7 @@ Kryteria akceptacji:
 - Po zapisaniu karta pojawia się w sesji.
 - Embedding jest generowany automatycznie.
 
-### US-004
+### US-008
 
 Tytuł: Wyświetlenie i przeciąganie kart  
 Opis: Jako użytkownik chcę przeciągać karty między kubełkami, aby ustalić wycenę.  
@@ -113,7 +156,7 @@ Kryteria akceptacji:
 - Zmiana pozycji jest zapisywana w czasie rzeczywistym.
 - Interfejs działa płynnie dla do 50 kart.
 
-### US-005
+### US-009
 
 Tytuł: Podgląd szczegółów zadania  
 Opis: Jako deweloper chcę otworzyć opis zadania w modalu, aby zrozumieć zakres pracy.  
@@ -123,7 +166,7 @@ Kryteria akceptacji:
 - Modal wyświetla pełny description.
 - Modal można zamknąć bez utraty stanu sesji.
 
-### US-006
+### US-010
 
 Tytuł: Automatyczna estymacja przez AI  
 Opis: Jako facylitator chcę, aby AI wstępnie przypisało zadania do kubełków.  
@@ -133,7 +176,7 @@ Kryteria akceptacji:
 - AI przypisuje wszystkie karty do kubełków.
 - Poprzedni układ zostaje zastąpiony.
 
-### US-007
+### US-011
 
 Tytuł: Podsumowanie estymacji  
 Opis: Jako facylitator chcę zobaczyć tabelaryczne podsumowanie wycen.  
@@ -143,7 +186,7 @@ Kryteria akceptacji:
 - Dane są tylko do odczytu.
 - Widok odzwierciedla aktualny stan sesji.
 
-### US-008
+### US-012
 
 Tytuł: Czyszczenie sesji  
 Opis: Jako facylitator chcę wyczyścić sesję po zakończeniu planowania.  
@@ -153,7 +196,7 @@ Kryteria akceptacji:
 - Dane analityczne są zachowane w bazie.
 - Użytkownik otrzymuje pustą sesję gotową do ponownego użycia.
 
-### US-009
+### US-013
 
 Tytuł: Obsługa błędów i stanów skrajnych  
 Opis: Jako użytkownik chcę otrzymywać jasne komunikaty o błędach, aby wiedzieć jak zareagować.  

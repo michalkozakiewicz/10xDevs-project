@@ -330,9 +330,7 @@ export function ImportCsvModal({ isOpen, onClose, onSubmit, sessionId, currentCa
                         <TableRow key={idx}>
                           <TableCell className="font-mono text-xs">{row.id}</TableCell>
                           <TableCell className="text-sm">{row.title}</TableCell>
-                          <TableCell className="text-xs text-muted-foreground">
-                            {row.description || "-"}
-                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">{row.description || "-"}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

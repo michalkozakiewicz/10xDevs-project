@@ -170,8 +170,8 @@ export function TaskDetailModal({ isOpen, onClose, card, onDelete, sessionId }: 
               <AlertDialogHeader>
                 <AlertDialogTitle>Czy na pewno chcesz usunąć to zadanie?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Ta operacja jest nieodwracalna. Zadanie <strong>{card.external_id}</strong> zostanie trwale
-                  usunięte z sesji.
+                  Ta operacja jest nieodwracalna. Zadanie <strong>{card.external_id}</strong> zostanie trwale usunięte z
+                  sesji.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

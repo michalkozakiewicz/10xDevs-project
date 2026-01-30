@@ -1,15 +1,6 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(npx supabase status)",
-      "Bash(npx shadcn@latest add:*)"
-    ],
-    "deny": [
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Read(./secrets/**)",
-      "Read(./config/credentials.json)",
-      "Read(./build)"
-    ]
+    "allow": ["Bash(npx supabase status)", "Bash(npx shadcn@latest add:*)"],
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Read(./secrets/**)", "Read(./config/credentials.json)", "Read(./build)"]
   }
 }

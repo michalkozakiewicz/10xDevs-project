@@ -166,8 +166,8 @@ export function AiEstimationModal({ isOpen, onClose, onSubmit, sessionId, cardsC
                     />
                   </FormControl>
                   <FormDescription>
-                    Dodatkowy kontekst pomoże AI lepiej oszacować zadania. Możesz opisać specyfikę projektu, zespołu
-                    lub technologii.
+                    Dodatkowy kontekst pomoże AI lepiej oszacować zadania. Możesz opisać specyfikę projektu, zespołu lub
+                    technologii.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -195,9 +195,7 @@ export function AiEstimationModal({ isOpen, onClose, onSubmit, sessionId, cardsC
             />
 
             {/* Retry count indicator */}
-            {retryCount > 0 && (
-              <p className="text-xs text-muted-foreground">Próba: {retryCount + 1}</p>
-            )}
+            {retryCount > 0 && <p className="text-xs text-muted-foreground">Próba: {retryCount + 1}</p>}
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>

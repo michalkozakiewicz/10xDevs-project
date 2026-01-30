@@ -184,10 +184,7 @@ export class OpenRouterService {
    * @returns Parsed completion response
    * @throws {Error} If response is not ok or parsing fails
    */
-  private async handleResponse(
-    resp: Response,
-    response_format?: ResponseFormatSchema
-  ): Promise<CompletionResponse> {
+  private async handleResponse(resp: Response, response_format?: ResponseFormatSchema): Promise<CompletionResponse> {
     if (!resp.ok) {
       const txt = await resp.text().catch(() => "");
       throw new Error(`OpenRouter error ${resp.status}: ${txt}`);

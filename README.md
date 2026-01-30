@@ -57,6 +57,7 @@ cp .env.example .env
 ```
 
 Wymagane zmienne:
+
 - `SUPABASE_URL` - URL Twojego projektu Supabase
 - `SUPABASE_KEY` - Klucz publiczny API Supabase
 - `OPENROUTER_API_KEY` - Klucz API OpenRouter (do AI estymacji)
@@ -153,6 +154,7 @@ npm run build
 ## Dokumentacja
 
 Szczegółowa dokumentacja znajduje się w katalogu `.ai/`:
+
 - `prd.md` - Pełny dokument wymagań produktu
 - `tech-stack.md` - Szczegóły techniczne
 - `db-plan.md` - Schemat bazy danych
