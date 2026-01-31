@@ -47,7 +47,7 @@ interface AIEstimationResponse {
  * @param context - Optional session context
  * @returns System message for AI
  */
-function buildSystemPrompt(context: string | null): ChatMessage {
+export function buildSystemPrompt(context: string | null): ChatMessage {
   let systemContent = `Jesteś ekspertem w estymacji zadań programistycznych metodą Bucket System.
 Twoim zadaniem jest oszacowanie złożoności zadań i przypisanie ich do odpowiednich kubełków.
 
@@ -85,7 +85,7 @@ Uwzględnij powyższy kontekst przy estymacji zadań.`;
  * @param cards - List of cards to estimate
  * @returns User message for AI
  */
-function buildUserPrompt(cards: CardDTO[]): ChatMessage {
+export function buildUserPrompt(cards: CardDTO[]): ChatMessage {
   const cardsList = cards
     .map((card) => {
       const description = card.description ? `\nOpis: ${card.description}` : "";
