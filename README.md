@@ -115,6 +115,7 @@ npm run build
   - Uruchamia testy jednostkowe z pokryciem kodu
   - Buduje projekt i weryfikuje poprawność buildu
   - Dodaje komentarz ze statusem do pull requesta
+  - Workflow testowy - weryfikacja działania CI/CD
 
 ## Struktura projektu
 
