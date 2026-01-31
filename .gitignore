@@ -21,8 +21,10 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
-# jetbrains setting folder
+# IDE settings folders
 .idea/
+.claude/
+.cursor/
 
 # test coverage
 coverage/

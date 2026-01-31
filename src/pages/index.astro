@@ -1,8 +1,6 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
+// Redirect to sessions page
+// - If user is not authenticated: middleware will redirect to /auth/login
+// - If user is authenticated: will show sessions dashboard
+return Astro.redirect("/sessions");
 ---
-
-<Layout>
-  <Welcome />
-</Layout>

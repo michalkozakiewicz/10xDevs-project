@@ -21,12 +21,18 @@ BucketEstimate AI to narzędzie stworzone z myślą o zespołach deweloperskich,
 
 ## Tech Stack
 
+### Frontend i Backend
 - [Astro](https://astro.build/) v5 - Framework do budowy szybkich aplikacji webowych
 - [React](https://react.dev/) v19 - Biblioteka UI do interaktywnych komponentów
 - [TypeScript](https://www.typescriptlang.org/) v5 - Typowany JavaScript
 - [Tailwind CSS](https://tailwindcss.com/) v4 - Framework CSS utility-first
 - [Shadcn/ui](https://ui.shadcn.com/) - Komponenty UI (wariant new-york, kolor neutral)
 - [Supabase](https://supabase.com/) - Backend, uwierzytelnianie i baza danych (PostgreSQL)
+
+### Testowanie
+- [Vitest](https://vitest.dev/) v2 - Framework do testów jednostkowych i integracyjnych
+- [Playwright](https://playwright.dev/) v1.48 - Framework do testów end-to-end (E2E)
+- [Testing Library](https://testing-library.com/) v16 - Narzędzia do testowania komponentów React
 
 ## Prerequisites
 
@@ -82,13 +88,25 @@ npm run build
 
 ## Dostępne skrypty
 
+### Rozwój
 - `npm run dev` - Uruchom serwer deweloperski
 - `npm run build` - Zbuduj wersję produkcyjną
 - `npm run preview` - Podgląd buildu produkcyjnego
+
+### Jakość kodu
 - `npm run lint` - Uruchom ESLint
 - `npm run lint:fix` - Napraw problemy ESLint
 - `npm run format` - Sformatuj kod (Prettier)
 - `npm run format:check` - Sprawdź formatowanie bez zmian
+
+### Testowanie
+- `npm run test` - Uruchom wszystkie testy
+- `npm run test:unit` - Uruchom testy jednostkowe (Vitest)
+- `npm run test:unit -- --watch` - Testy jednostkowe w trybie watch
+- `npm run test:unit -- --coverage` - Testy jednostkowe z pokryciem kodu
+- `npm run test:e2e` - Uruchom testy E2E (Playwright)
+- `npm run test:e2e:headed` - Testy E2E z widoczną przeglądarką
+- `npm run test:integration` - Uruchom testy integracyjne
 
 ## Struktura projektu
 
@@ -159,6 +177,7 @@ Szczegółowa dokumentacja znajduje się w katalogu `.ai/`:
 - `tech-stack.md` - Szczegóły techniczne
 - `db-plan.md` - Schemat bazy danych
 - `api-plan.md` - Specyfikacja API
+- `test-plan.md` - Kompleksowy plan testów (unit, integration, E2E, performance, security)
 
 ## Licencja
 

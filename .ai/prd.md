@@ -77,24 +77,25 @@ Poza zakresem MVP znajdują się:
 
 ID: US-001
 Tytuł: Rejestracja konta
-Opis: Jako użytkownik chcę założyć konto używając nazwy użytkownika i hasła, aby zapisywać fiszki i postępy.
+Opis: Jako użytkownik chcę założyć konto używając adresu email i hasła, aby mieć dostęp do aplikacji BucketEstimate.
 Kryteria akceptacji:
 
-Formularz rejestracji zawiera pola: nazwa użytkownika, hasło, potwierdzenie hasła.
-Walidacja: nazwa użytkownika wymagana; hasło wymagane; hasła muszą być zgodne.
-Po udanej rejestracji użytkownik jest zalogowany lub przekierowany do logowania z jasnym komunikatem sukcesu.
-Próba rejestracji z zajętą nazwą użytkownika kończy się komunikatem błędu.
+- Formularz rejestracji zawiera pola: email, hasło, potwierdzenie hasła.
+- Walidacja: email wymagany i poprawny format; hasło wymagane (min. 6 znaków); hasła muszą być zgodne.
+- Po udanej rejestracji użytkownik jest przekierowany do logowania z jasnym komunikatem sukcesu.
+- Próba rejestracji z zajętym adresem email kończy się komunikatem błędu.
 
 ### US-002
 
 ID: US-002
 Tytuł: Logowanie
-Opis: Jako użytkownik chcę zalogować się nazwą użytkownika i hasłem, aby uzyskać dostęp do swoich fiszek.
+Opis: Jako użytkownik chcę zalogować się adresem email i hasłem, aby uzyskać dostęp do moich sesji estymacji.
 Kryteria akceptacji:
 
-Formularz logowania zawiera pola: nazwa użytkownika, hasło.
-Poprawne dane logują użytkownika i zapewniają dostęp do widoków aplikacji.
-Błędne dane nie logują użytkownika i pokazują komunikat błędu bez ujawniania, czy konto istnieje.
+- Formularz logowania zawiera pola: email, hasło.
+- Poprawne dane logują użytkownika i przekierowują do dashboardu sesji.
+- Błędne dane nie logują użytkownika i pokazują komunikat błędu bez ujawniania, czy konto istnieje.
+- System zachowuje URL powrotu (return_to) dla przekierowania po zalogowaniu.
 
 ### US-003
 
@@ -103,108 +104,210 @@ Tytuł: Wylogowanie
 Opis: Jako użytkownik chcę się wylogować, aby zakończyć sesję na współdzielonym urządzeniu.
 Kryteria akceptacji:
 
-Widoczny jest przycisk wylogowania dla zalogowanego użytkownika.
-Po wylogowaniu zasoby wymagające autoryzacji nie są dostępne bez ponownego logowania.
+- W topbarze widoczny jest przycisk wylogowania z adresem email użytkownika.
+- Po wylogowaniu użytkownik jest przekierowany do strony logowania.
+- Chronione widoki nie są dostępne bez ponownego logowania.
 
 ### US-004
 
 ID: US-004
 Tytuł: Izolacja danych między użytkownikami (autoryzacja)
-Opis: Jako użytkownik chcę mieć pewność, że inni użytkownicy nie mają dostępu do moich fiszek i postępów.
+Opis: Jako użytkownik chcę mieć pewność, że inni użytkownicy nie mają dostępu do moich sesji estymacji.
 Kryteria akceptacji:
 
-Zalogowany użytkownik widzi wyłącznie fiszki i dane powtórek przypisane do jego konta.
-Próba dostępu do zasobu innego użytkownika (np. przez manipulację ID) skutkuje odmową (np. 403/404) i nie ujawnia danych.
+- Zalogowany użytkownik widzi wyłącznie sesje przypisane do swojego konta.
+- Próba dostępu do sesji innego użytkownika (np. przez manipulację ID w URL) skutkuje błędem 404.
+- Row Level Security (RLS) w bazie danych wymusza izolację danych.
 
 ### US-005
 
 ID: US-005
-Tytuł: Obsługa wygaśniętej sesji
+Tytuł: Obsługa wygaśniętej sesji autoryzacyjnej
 Opis: Jako użytkownik chcę dostać jasną informację i możliwość ponownego logowania, gdy moja sesja wygaśnie.
 Kryteria akceptacji:
 
-Gdy sesja wygaśnie, próba wejścia na chroniony widok przekierowuje do logowania.
-Po zalogowaniu użytkownik wraca do głównego widoku aplikacji.
+- Gdy sesja JWT wygaśnie, próba wejścia na chroniony widok przekierowuje do logowania.
+- Oryginalny URL jest zachowany jako parametr return_to.
+- Po zalogowaniu użytkownik wraca do poprzedniego widoku.
 
 ### US-006
 
-Tytuł: Import kart z CSV  
-Opis: Jako facylitator chcę zaimportować listę zadań z pliku CSV, aby szybko rozpocząć sesję.  
+ID: US-006
+Tytuł: Przeglądanie listy sesji
+Opis: Jako facylitator chcę zobaczyć listę moich sesji estymacji, aby wybrać sesję do pracy lub utworzyć nową.
 Kryteria akceptacji:
 
-- System akceptuje tylko pliki CSV o wymaganych kolumnach.
-- Po imporcie wyświetlana jest liczba poprawnie wczytanych kart.
-- Błędne wiersze są pomijane i raportowane.
+- Po zalogowaniu użytkownik widzi dashboard z listą swoich sesji.
+- Każda sesja wyświetla ID (skrócone), datę utworzenia i liczbę kart.
+- Sesje są sortowane od najnowszych.
+- Przy braku sesji wyświetlany jest empty state z CTA do utworzenia pierwszej sesji.
+- Kliknięcie karty sesji otwiera widok estymacji.
 
 ### US-007
 
-Tytuł: Ręczne dodanie karty  
-Opis: Jako facylitator chcę dodać pojedyncze zadanie ręcznie, aby uzupełnić backlog ad-hoc.  
+ID: US-007
+Tytuł: Tworzenie nowej sesji
+Opis: Jako facylitator chcę utworzyć nową sesję estymacji, aby rozpocząć planowanie zadań.
 Kryteria akceptacji:
 
-- Formularz wymaga podania id i title.
-- Po zapisaniu karta pojawia się w sesji.
-- Embedding jest generowany automatycznie.
+- Na dashboardzie dostępny jest przycisk "Utwórz nową sesję".
+- Po kliknięciu tworzona jest nowa pusta sesja i użytkownik jest do niej przekierowany.
+- Nowa sesja pojawia się na liście sesji.
+- Sesja jest powiązana z zalogowanym użytkownikiem.
 
 ### US-008
 
-Tytuł: Wyświetlenie i przeciąganie kart  
-Opis: Jako użytkownik chcę przeciągać karty między kubełkami, aby ustalić wycenę.  
+ID: US-008
+Tytuł: Import kart z CSV
+Opis: Jako facylitator chcę zaimportować listę zadań z pliku CSV, aby szybko rozpocząć sesję.
 Kryteria akceptacji:
 
-- Karty można swobodnie przenosić między kolumnami.
-- Zmiana pozycji jest zapisywana w czasie rzeczywistym.
-- Interfejs działa płynnie dla do 50 kart.
+- System akceptuje tylko pliki CSV o wymaganych kolumnach (id, title, description).
+- Po imporcie wyświetlana jest liczba poprawnie wczytanych kart.
+- Błędne wiersze są pomijane i raportowane z numerem wiersza i przyczyną.
+- Import nie przekracza limitu 50 kart w sesji.
+- Duplikaty external_id są odrzucane.
 
 ### US-009
 
-Tytuł: Podgląd szczegółów zadania  
-Opis: Jako deweloper chcę otworzyć opis zadania w modalu, aby zrozumieć zakres pracy.  
+ID: US-009
+Tytuł: Ręczne dodanie karty
+Opis: Jako facylitator chcę dodać pojedyncze zadanie ręcznie, aby uzupełnić backlog ad-hoc.
 Kryteria akceptacji:
 
-- Kliknięcie karty otwiera modal.
-- Modal wyświetla pełny description.
-- Modal można zamknąć bez utraty stanu sesji.
+- Formularz wymaga podania id (external_id) i title.
+- Opis (description) jest opcjonalny.
+- Po zapisaniu karta pojawia się w kubełku "Do wyceny" (?).
+- Próba dodania karty z istniejącym external_id kończy się błędem 409.
+- Nie można przekroczyć limitu 50 kart w sesji.
 
 ### US-010
 
-Tytuł: Automatyczna estymacja przez AI  
-Opis: Jako facylitator chcę, aby AI wstępnie przypisało zadania do kubełków.  
+ID: US-010
+Tytuł: Wyświetlenie i przeciąganie kart
+Opis: Jako użytkownik chcę przeciągać karty między kubełkami, aby ustalić wycenę.
 Kryteria akceptacji:
 
-- System wyświetla modal potwierdzenia przed uruchomieniem AI.
-- AI przypisuje wszystkie karty do kubełków.
-- Poprzedni układ zostaje zastąpiony.
+- Karty można swobodnie przenosić między 8 kolumnami (1, 2, 3, 5, 8, 13, 21, ?).
+- Zmiana pozycji jest zapisywana w czasie rzeczywistym (optimistic UI).
+- Interfejs działa płynnie dla do 50 kart.
+- Kubełek "?" jest wizualnie wyróżniony (szare tło, przerywana obwódka).
+- Drag-and-drop wspiera nawigację klawiaturą.
 
 ### US-011
 
-Tytuł: Podsumowanie estymacji  
-Opis: Jako facylitator chcę zobaczyć tabelaryczne podsumowanie wycen.  
+ID: US-011
+Tytuł: Podgląd szczegółów zadania
+Opis: Jako deweloper chcę otworzyć opis zadania w modalu, aby zrozumieć zakres pracy.
 Kryteria akceptacji:
 
-- Tabela zawiera ID, tytuł i wycenę.
-- Dane są tylko do odczytu.
-- Widok odzwierciedla aktualny stan sesji.
+- Kliknięcie karty otwiera modal ze szczegółami.
+- Modal wyświetla: external_id, tytuł, opis, aktualną wycenę (badge).
+- Wszystkie pola są tylko do odczytu.
+- Modal można zamknąć bez utraty stanu sesji.
 
 ### US-012
 
-Tytuł: Czyszczenie sesji  
-Opis: Jako facylitator chcę wyczyścić sesję po zakończeniu planowania.  
+ID: US-012
+Tytuł: Usuwanie pojedynczej karty
+Opis: Jako facylitator chcę usunąć pojedynczą kartę z sesji, aby usunąć błędnie dodane zadanie.
 Kryteria akceptacji:
 
-- Bieżący stan sesji zostaje usunięty.
-- Dane analityczne są zachowane w bazie.
-- Użytkownik otrzymuje pustą sesję gotową do ponownego użycia.
+- W modalu szczegółów karty dostępny jest przycisk "Usuń zadanie".
+- Przed usunięciem wyświetlany jest AlertDialog z potwierdzeniem.
+- Po potwierdzeniu karta jest trwale usuwana z sesji.
+- Użytkownik otrzymuje toast z potwierdzeniem usunięcia.
+- Karta znika z kubełka natychmiast (optimistic UI).
 
 ### US-013
 
-Tytuł: Obsługa błędów i stanów skrajnych  
-Opis: Jako użytkownik chcę otrzymywać jasne komunikaty o błędach, aby wiedzieć jak zareagować.  
+ID: US-013
+Tytuł: Automatyczna estymacja przez AI
+Opis: Jako facylitator chcę, aby AI wstępnie przypisało zadania do kubełków.
 Kryteria akceptacji:
 
-- System informuje o błędach importu, zapisu i AI.
+- System wyświetla modal z ostrzeżeniem przed uruchomieniem AI.
+- Użytkownik może podać opcjonalny kontekst projektu.
+- AI przypisuje wszystkie karty do kubełków na podstawie treści.
+- Poprzedni układ zostaje zastąpiony.
+- W przypadku błędu AI (503) wyświetlany jest komunikat z opcją ponowienia.
+
+### US-014
+
+ID: US-014
+Tytuł: Podsumowanie estymacji
+Opis: Jako facylitator chcę zobaczyć tabelaryczne podsumowanie wycen.
+Kryteria akceptacji:
+
+- Dostępna jest zakładka "Podsumowanie" w widoku sesji.
+- Tabela zawiera: external_id, tytuł, wycenę (bucket_value).
+- Dane są tylko do odczytu.
+- Tabela jest sortowana według wyceny.
+- Widok odzwierciedla aktualny stan sesji.
+
+### US-015
+
+ID: US-015
+Tytuł: Czyszczenie sesji
+Opis: Jako facylitator chcę wyczyścić sesję po zakończeniu planowania.
+Kryteria akceptacji:
+
+- Dostępna jest opcja czyszczenia sesji.
+- Czyszczenie resetuje bucket_value wszystkich kart do null.
+- Karty pozostają w sesji, ale wracają do kubełka "?".
+- Dane analityczne (embeddingi) są zachowane.
+- Użytkownik otrzymuje informację o liczbie wyczyszczonych kart.
+
+### US-016
+
+ID: US-016
+Tytuł: Usuwanie sesji
+Opis: Jako facylitator chcę usunąć całą sesję, której już nie potrzebuję.
+Kryteria akceptacji:
+
+- Na dashboardzie lub w widoku sesji dostępna jest opcja usunięcia.
+- Przed usunięciem wyświetlany jest dialog potwierdzenia.
+- Usunięcie sesji usuwa również wszystkie jej karty.
+- Po usunięciu użytkownik jest przekierowany do dashboardu.
+- Usunięta sesja nie pojawia się już na liście.
+
+### US-017
+
+ID: US-017
+Tytuł: Aktualizacja kontekstu sesji
+Opis: Jako facylitator chcę dodać kontekst projektu do sesji, aby AI lepiej rozumiało specyfikę zadań.
+Kryteria akceptacji:
+
+- W modalu AI estymacji dostępne jest pole tekstowe na kontekst.
+- Kontekst jest zapisywany w sesji i używany przy kolejnych estymacjach AI.
+- Maksymalna długość kontekstu to 10000 znaków.
+- Kontekst jest opcjonalny.
+
+### US-018
+
+ID: US-018
+Tytuł: Nawigacja między widokami
+Opis: Jako użytkownik chcę łatwo nawigować między dashboardem a widokiem sesji.
+Kryteria akceptacji:
+
+- Logo w topbarze prowadzi do dashboardu sesji.
+- W widoku sesji dostępny jest przycisk "Wróć" do dashboardu.
+- Przełączanie między zakładkami "Estymacja" i "Podsumowanie" nie zmienia URL.
+- Stan sesji jest zachowywany przy nawigacji.
+
+### US-019
+
+ID: US-019
+Tytuł: Obsługa błędów i stanów skrajnych
+Opis: Jako użytkownik chcę otrzymywać jasne komunikaty o błędach, aby wiedzieć jak zareagować.
+Kryteria akceptacji:
+
+- System informuje o błędach importu, zapisu i AI poprzez toast.
 - Brak połączenia z backendem jest sygnalizowany w UI.
-- Aplikacja nie traci danych przy chwilowych błędach sieci.
+- Błąd 401 przekierowuje do logowania z zachowaniem return_to URL.
+- Błąd 409 (konflikt ID) wyświetla inline error pod polem.
+- Błąd 422 (limit kart) informuje o pozostałej liczbie dostępnych miejsc.
+- Aplikacja nie traci danych przy chwilowych błędach sieci (optimistic UI).
 
 ## 6. Metryki sukcesu
 
