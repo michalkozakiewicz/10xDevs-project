@@ -102,11 +102,19 @@ npm run build
 ### Testowanie
 - `npm run test` - Uruchom wszystkie testy
 - `npm run test:unit` - Uruchom testy jednostkowe (Vitest)
-- `npm run test:unit -- --watch` - Testy jednostkowe w trybie watch
-- `npm run test:unit -- --coverage` - Testy jednostkowe z pokryciem kodu
-- `npm run test:e2e` - Uruchom testy E2E (Playwright)
-- `npm run test:e2e:headed` - Testy E2E z widoczną przeglądarką
+- `npm run test:watch` - Testy w trybie watch
+- `npm run test:ui` - Testy z interfejsem graficznym (Vitest UI)
+- `npm run test:coverage` - Testy z pokryciem kodu
 - `npm run test:integration` - Uruchom testy integracyjne
+- `npm run test:e2e` - Uruchom testy E2E (Playwright)
+- `npm run test:e2e:ui` - Testy E2E z interfejsem Playwright
+- `npm run test:e2e:debug` - Testy E2E w trybie debugowania
+
+### CI/CD
+- Automatyczne workflow dla pull requestów (`.github/workflows/pull-request.yml`)
+  - Uruchamia testy jednostkowe z pokryciem kodu
+  - Buduje projekt i weryfikuje poprawność buildu
+  - Dodaje komentarz ze statusem do pull requesta
 
 ## Struktura projektu
 
