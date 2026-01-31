@@ -1,0 +1,146 @@
+# Pull Request Workflow
+# This workflow runs on every pull request to ensure code quality and test coverage
+# Jobs: test, build, status-comment
+
+name: Pull Request CI
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize, reopened]
+
+# Cancel in-progress runs when a new push is made
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  # Job 1: Testy z coverage
+  test:
+    name: Tests with Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      NODE_VERSION: "22.14.0"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: coverage-reports
+          path: coverage/
+          retention-days: 30
+
+  # Job 2: Build projektu
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      NODE_VERSION: "22.14.0"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: build-output
+          path: dist/
+          retention-days: 7
+
+  # Job 3: Status comment - uruchamia się tylko gdy wszystkie poprzednie joby przeszły
+  status-comment:
+    name: Post Status Comment
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [test, build]
+    if: always()
+
+    env:
+      NODE_VERSION: "22.14.0"
+
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Create success comment
+        if: needs.test.result == 'success' && needs.build.result == 'success'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-status
+          message: |
+            ## ✅ Pull Request Status: Success
+
+            All checks have passed successfully!
+
+            | Job | Status |
+            |-----|--------|
+            | Tests | ✅ Passed |
+            | Build | ✅ Passed |
+
+            **Coverage reports** and **build artifacts** are available in the artifacts section of the workflow run.
+
+            ---
+            <sub>Last updated: ${{ github.event.pull_request.updated_at }}</sub>
+
+      - name: Create failure comment
+        if: needs.test.result != 'success' || needs.build.result != 'success'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-status
+          message: |
+            ## ❌ Pull Request Status: Failed
+
+            Some checks have failed. Please review the logs and fix the issues.
+
+            | Job | Status |
+            |-----|--------|
+            | Tests | ${{ needs.test.result == 'success' && '✅ Passed' || '❌ Failed' }} |
+            | Build | ${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }} |
+
+            **Action required:** Fix the failing checks before this PR can be merged.
+
+            ---
+            <sub>Last updated: ${{ github.event.pull_request.updated_at }}</sub>
